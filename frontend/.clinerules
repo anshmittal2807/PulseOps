@@ -1,0 +1,1259 @@
+# ============================================================
+# PROJECT DEVELOPMENT RULES
+# ============================================================
+#
+# This file is the PRIMARY SOURCE OF TRUTH for the project.
+#
+# Cline MUST read and follow this file before:
+# - Creating any file
+# - Modifying any file
+# - Adding a component
+# - Adding a page
+# - Adding a feature
+# - Changing UI
+# - Changing project structure
+# - Adding dependencies
+# - Refactoring code
+#
+# Do not assume project conventions.
+# Do not invent architecture.
+# Do not introduce libraries or patterns without permission.
+#
+# ============================================================
+
+
+# ============================================================
+# 1. CORE DEVELOPMENT PHILOSOPHY
+# ============================================================
+
+The project must remain:
+
+- Simple
+- Readable
+- Componentized
+- Maintainable
+- Beginner-friendly
+- Easy to debug
+- Easy to extend
+- Consistent
+
+Prefer simple code over clever code.
+
+DO NOT write code merely because it is technically more advanced.
+
+If two approaches solve the same problem:
+
+    Choose the simpler approach.
+
+The project is NOT intended to demonstrate advanced JavaScript,
+advanced React patterns, complex abstractions, or unnecessary
+architectural patterns.
+
+The code should be understandable by a developer who knows:
+
+- Basic JavaScript
+- Basic React
+- Basic HTML
+- Basic CSS
+- Basic API communication
+
+
+# ============================================================
+# 2. REQUIRED FIRST STEP FOR CLINE
+# ============================================================
+
+Before making ANY change, Cline MUST:
+
+1. Read this `.clinerules` file.
+2. Read `PROJECT_TERMINOLOGY.md`.
+3. Inspect the existing project structure.
+4. Identify existing components that can be reused.
+5. Follow existing naming conventions.
+6. Follow existing UI conventions.
+7. Follow existing folder conventions.
+8. Avoid creating duplicate functionality.
+
+If the required information is not available:
+
+DO NOT guess.
+
+Instead:
+- Inspect the project.
+- Search existing files.
+- Reuse existing patterns.
+- Ask for clarification only if absolutely necessary.
+
+
+# ============================================================
+# 3. PROJECT TERMINOLOGY
+# ============================================================
+
+The file:
+
+    PROJECT_TERMINOLOGY.md
+
+contains:
+
+- Naming conventions
+- Domain terminology
+- UI terminology
+- Technical terminology
+- Meaning of important project-specific words
+- Component naming rules
+- Variable naming rules
+- API naming rules
+- Database naming rules
+- Words that MUST be used
+- Words that MUST NOT be used
+
+Cline MUST read this file before creating or naming:
+
+- Components
+- Pages
+- Variables
+- Functions
+- API methods
+- Routes
+- Database entities
+- UI sections
+- Features
+
+
+# ============================================================
+# 4. CHANGE DOCUMENTATION — MANDATORY
+# ============================================================
+
+EVERY change made by Cline MUST be documented.
+
+No change is considered complete until it is documented.
+
+For every change, document:
+
+1. What was changed
+2. Why it was changed
+3. Which files were created
+4. Which files were modified
+5. Which files were deleted
+6. What functionality was added
+7. What functionality was removed
+8. Any API changes
+9. Any database changes
+10. Any UI changes
+11. Any dependency changes
+12. Any important implementation decision
+
+Maintain:
+
+    CHANGELOG.md
+
+The changelog must contain a new entry for every meaningful change.
+
+Use this structure:
+
+    ## YYYY-MM-DD - Short Change Name
+
+    ### Type
+    Feature / Fix / Refactor / UI / Database / API / Other
+
+    ### Summary
+    Short explanation of the change.
+
+    ### Files Created
+    - path/to/file
+
+    ### Files Modified
+    - path/to/file
+
+    ### Files Deleted
+    - path/to/file
+
+    ### Details
+    - What changed
+    - Why it changed
+    - Important implementation details
+
+    ### Testing
+    - What was tested
+    - Result
+
+Keep changelog entries concise but complete.
+
+DO NOT write vague entries such as:
+
+    "Updated frontend."
+
+Instead write:
+
+    "Created reusable MonitorCard component and replaced duplicated
+    monitor card markup on the dashboard."
+
+
+# ============================================================
+# 5. TAILWIND CSS — MANDATORY
+# ============================================================
+
+Tailwind CSS is the ONLY allowed styling system.
+
+ALL UI styling MUST use Tailwind CSS utility classes.
+
+Use:
+
+    className="..."
+
+Do NOT create custom CSS unless explicitly requested.
+
+DO NOT create:
+
+- New CSS files
+- SCSS files
+- LESS files
+- Styled-components
+- Emotion styles
+- CSS-in-JS
+- Inline style objects
+- Another CSS framework
+
+Do NOT introduce:
+
+- Bootstrap
+- Material UI
+- Chakra UI
+- Ant Design
+- Bulma
+- Semantic UI
+- Any other UI framework
+
+Tailwind must be the single styling approach.
+
+Example:
+
+GOOD:
+
+    <div className="flex items-center gap-4 rounded-lg bg-white p-4 shadow">
+
+BAD:
+
+    <div className="monitor-card">
+
+BAD:
+
+    <div style={{ display: "flex", padding: "16px" }}>
+
+BAD:
+
+    import "./MonitorCard.css";
+
+
+# ============================================================
+# 6. TAILWIND STYLE RULES
+# ============================================================
+
+Use Tailwind classes directly in JSX.
+
+Prefer readable className formatting.
+
+Example:
+
+    <div
+        className="
+            flex
+            items-center
+            justify-between
+            rounded-lg
+            border
+            border-gray-200
+            bg-white
+            p-4
+        "
+    >
+
+For short classes, a single line is acceptable.
+
+Avoid extremely long unreadable className strings when splitting
+them across lines improves readability.
+
+Use existing project spacing, colors, borders, radius, shadows,
+and typography patterns.
+
+DO NOT randomly introduce new colors.
+
+Before using a color:
+
+1. Search the project.
+2. Check existing Tailwind usage.
+3. Reuse existing design patterns.
+
+Consistency is more important than introducing new styling.
+
+
+# ============================================================
+# 7. NO ADVANCED JAVASCRIPT
+# ============================================================
+
+Use simple JavaScript.
+
+The project must NOT use advanced JavaScript patterns unless
+there is a clear requirement and the existing project already
+uses them.
+
+Prefer:
+
+- const
+- let
+- functions
+- simple arrow functions
+- arrays
+- objects
+- map
+- filter
+- find
+- basic conditionals
+- basic loops
+- async/await
+- try/catch
+- simple destructuring
+
+Avoid unnecessary:
+
+- Complex closures
+- Generators
+- Proxies
+- Metaprogramming
+- Advanced functional programming
+- Complex currying
+- Complex memoization
+- Custom hooks for trivial logic
+- Generic abstraction layers
+- Complex state machines
+- Unnecessary decorators
+- Highly abstract utility systems
+- Clever one-liners
+
+If simple code works, use simple code.
+
+
+# ============================================================
+# 8. REACT RULES
+# ============================================================
+
+Use standard React patterns.
+
+Prefer:
+
+    Components
+    Props
+    useState
+    useEffect
+    useNavigate
+    useParams
+
+Use hooks only when necessary.
+
+Do NOT create a custom hook for a small piece of logic that is
+only used once.
+
+Example:
+
+GOOD:
+
+    const [loading, setLoading] = useState(false);
+
+BAD:
+
+    const useLoadingStateManager = (...) => {
+        ...
+    }
+
+when the logic is only used in one component.
+
+Keep React components understandable.
+
+
+# ============================================================
+# 9. COMPONENTIZATION
+# ============================================================
+
+The application MUST be componentized.
+
+Do NOT create huge components.
+
+A component should have one clear responsibility.
+
+Example:
+
+BAD:
+
+    Dashboard.jsx
+
+containing:
+
+- Navbar
+- Sidebar
+- Monitor cards
+- Charts
+- Tables
+- Modal
+- API calls
+- Form logic
+- Validation
+- Notification logic
+
+Instead split it into logical components.
+
+Example:
+
+    Dashboard
+        ├── DashboardHeader
+        ├── MonitorSummary
+        ├── MonitorCard
+        ├── MonitorList
+        └── RecentEvents
+
+
+# ============================================================
+# 10. COMPONENT CREATION RULE
+# ============================================================
+
+Create a separate file for a reusable component.
+
+Example:
+
+    components/
+        MonitorCard.jsx
+        StatusBadge.jsx
+        Button.jsx
+        Navbar.jsx
+
+DO NOT put multiple large reusable components into one file.
+
+Small helper components may remain together if there is a clear
+reason.
+
+When a component starts becoming difficult to understand,
+consider splitting it.
+
+Do not split components unnecessarily.
+
+
+# ============================================================
+# 11. COMPONENT RESPONSIBILITY
+# ============================================================
+
+Every component should have a clear responsibility.
+
+For example:
+
+    MonitorCard.jsx
+
+should primarily handle:
+
+- Displaying monitor information
+- Displaying monitor status
+- User actions related directly to that card
+
+It should NOT also contain:
+
+- Entire dashboard logic
+- Authentication logic
+- Large API systems
+- Unrelated modal systems
+
+
+# ============================================================
+# 12. FILE NAMING
+# ============================================================
+
+Follow the naming rules in:
+
+    PROJECT_TERMINOLOGY.md
+
+General default:
+
+React components:
+
+    PascalCase
+
+Examples:
+
+    MonitorCard.jsx
+    DashboardHeader.jsx
+    StatusBadge.jsx
+
+Pages:
+
+    PascalCase
+
+Examples:
+
+    Dashboard.jsx
+    Login.jsx
+    Settings.jsx
+
+Utility files:
+
+    camelCase
+
+Examples:
+
+    formatDate.js
+    apiClient.js
+
+Do NOT randomly mix:
+
+    monitor-card.jsx
+    Monitorcard.jsx
+    monitorCard.jsx
+
+when the project convention requires:
+
+    MonitorCard.jsx
+
+
+# ============================================================
+# 13. FOLDER STRUCTURE
+# ============================================================
+
+Follow the existing project structure.
+
+Do NOT reorganize the entire project just because another
+structure looks better.
+
+If the project already has a structure, preserve it.
+
+A recommended React structure is:
+
+    src/
+    ├── components/
+    │   ├── common/
+    │   ├── layout/
+    │   └── monitor/
+    │
+    ├── pages/
+    │
+    ├── services/
+    │
+    ├── utils/
+    │
+    ├── hooks/
+    │
+    ├── assets/
+    │
+    ├── App.jsx
+    └── main.jsx
+
+However:
+
+DO NOT force this structure if the existing project already
+uses another sensible structure.
+
+Consistency with the existing project takes priority.
+
+
+# ============================================================
+# 14. PAGE VS COMPONENT
+# ============================================================
+
+A PAGE represents a route/screen.
+
+Examples:
+
+    Login.jsx
+    Dashboard.jsx
+    Settings.jsx
+
+A COMPONENT represents a reusable part of a page.
+
+Examples:
+
+    Navbar.jsx
+    MonitorCard.jsx
+    StatusBadge.jsx
+    SearchBar.jsx
+
+Do NOT create a page for something that should be a component.
+
+Do NOT create a component for an entire route unless there is
+a clear architectural reason.
+
+
+# ============================================================
+# 15. API / SERVICE CODE
+# ============================================================
+
+Keep API communication separate from UI components whenever
+practical.
+
+Do not fill React components with large API implementations.
+
+Prefer:
+
+    services/
+        monitorService.js
+        authService.js
+
+Example:
+
+    getMonitors()
+    getMonitorById()
+    createMonitor()
+    updateMonitor()
+    deleteMonitor()
+
+Components should call service functions rather than containing
+large repeated fetch implementations.
+
+Keep API functions simple.
+
+
+# ============================================================
+# 16. FETCH / API RULES
+# ============================================================
+
+Use the project's existing API approach.
+
+DO NOT introduce Axios if the project already uses fetch.
+
+DO NOT introduce another HTTP library just because it is popular.
+
+If fetch is already used:
+
+    fetch()
+
+should remain the default.
+
+Handle:
+
+- Loading state
+- Success state
+- Error state
+
+Do not build an unnecessarily complex API abstraction.
+
+
+# ============================================================
+# 17. STATE MANAGEMENT
+# ============================================================
+
+Use local React state by default.
+
+Prefer:
+
+    useState()
+
+Use context only when shared state genuinely requires it.
+
+Do NOT introduce:
+
+- Redux
+- Zustand
+- MobX
+- Recoil
+- Jotai
+
+unless explicitly requested.
+
+Do not introduce global state management for simple local state.
+
+
+# ============================================================
+# 18. FORMS
+# ============================================================
+
+Forms should remain simple.
+
+Use:
+
+- useState
+- controlled inputs
+- basic validation
+- simple submit handlers
+
+Do not introduce a form library unless explicitly requested.
+
+Validation should be readable.
+
+GOOD:
+
+    if (!name.trim()) {
+        setError("Name is required");
+        return;
+    }
+
+
+# ============================================================
+# 19. ERROR HANDLING
+# ============================================================
+
+Errors must be handled clearly.
+
+Do not silently ignore errors.
+
+Avoid:
+
+    catch (error) {}
+
+Prefer:
+
+    catch (error) {
+        console.error(error);
+        setError("Something went wrong.");
+    }
+
+User-facing errors should be understandable.
+
+Do not expose technical stack traces to users.
+
+
+# ============================================================
+# 20. LOADING STATES
+# ============================================================
+
+Async operations should have appropriate loading states.
+
+Example:
+
+    const [loading, setLoading] = useState(false);
+
+Do not create complex loading-management systems.
+
+Simple is preferred.
+
+
+# ============================================================
+# 21. REUSABILITY
+# ============================================================
+
+Reuse components when the same UI appears multiple times.
+
+If the same markup appears in multiple locations:
+
+1. Search for an existing component.
+2. Reuse it if possible.
+3. If no suitable component exists, create one.
+
+DO NOT duplicate large blocks of JSX.
+
+
+# ============================================================
+# 22. DO NOT OVER-ENGINEER
+# ============================================================
+
+Before creating an abstraction, ask:
+
+    "Does this actually solve a repeated problem?"
+
+If NO:
+
+    Keep the code simple.
+
+Do not create:
+
+    BaseComponent
+    AbstractComponent
+    GenericManager
+    UniversalHandler
+    ComponentFactory
+    ServiceFactory
+
+unless there is a real requirement.
+
+Avoid architecture for architecture's sake.
+
+
+# ============================================================
+# 23. DEPENDENCIES
+# ============================================================
+
+Do NOT install a new npm package without checking whether the
+existing project already provides the required functionality.
+
+Before installing a package:
+
+1. Check package.json.
+2. Search existing source code.
+3. Determine whether native JavaScript or existing libraries
+   can solve the problem.
+4. Only install if genuinely necessary.
+
+Do not install packages for convenience alone.
+
+
+# ============================================================
+# 24. UI CONSISTENCY
+# ============================================================
+
+All UI must look like it belongs to the same application.
+
+Reuse:
+
+- Colors
+- Typography
+- Spacing
+- Border radius
+- Shadows
+- Buttons
+- Inputs
+- Cards
+- Status indicators
+
+If an existing component already provides a style:
+
+    REUSE IT.
+
+Do not create a second visually similar component without reason.
+
+
+# ============================================================
+# 25. RESPONSIVENESS
+# ============================================================
+
+Use Tailwind responsive utilities.
+
+Example:
+
+    grid-cols-1
+    md:grid-cols-2
+    lg:grid-cols-3
+
+Do not create custom media queries.
+
+Use responsive Tailwind classes.
+
+Do not optimize for every possible screen size.
+
+Support reasonable:
+
+- Mobile
+- Tablet
+- Desktop
+
+
+# ============================================================
+# 26. ACCESSIBILITY
+# ============================================================
+
+Use basic accessibility practices.
+
+Buttons must be buttons.
+
+Links must be links.
+
+Inputs must have labels where appropriate.
+
+Images should have meaningful alt text.
+
+Interactive elements must be understandable.
+
+Do not sacrifice accessibility for visual styling.
+
+
+# ============================================================
+# 27. COMMENTS
+# ============================================================
+
+Do not comment obvious code.
+
+BAD:
+
+    // Set loading to true
+    setLoading(true);
+
+Comments should explain WHY something exists when the reason
+is not obvious.
+
+GOOD:
+
+    // Prevent duplicate requests while the monitor is being created.
+
+
+# ============================================================
+# 28. EXISTING CODE
+# ============================================================
+
+Before changing existing code:
+
+1. Read the entire relevant file.
+2. Understand its purpose.
+3. Search where it is used.
+4. Check whether other components depend on it.
+5. Make the smallest safe change.
+
+DO NOT rewrite an entire file when only a small change is required.
+
+
+# ============================================================
+# 29. DO NOT BREAK EXISTING FUNCTIONALITY
+# ============================================================
+
+Every change must preserve existing functionality unless the
+user explicitly asks for that functionality to be changed.
+
+Before modifying:
+
+    Search references.
+
+After modifying:
+
+    Check affected components and routes.
+
+
+# ============================================================
+# 30. DUPLICATE CODE CHECK
+# ============================================================
+
+Before creating a new:
+
+- Component
+- Service
+- Utility
+- Hook
+- Page
+
+search the project first.
+
+If something similar already exists:
+
+    Reuse or extend it.
+
+Do not create:
+
+    MonitorCard.jsx
+    ApiMonitorCard.jsx
+    APIMonitorCard.jsx
+
+when they represent the same concept.
+
+
+# ============================================================
+# 31. TERMINOLOGY RULE
+# ============================================================
+
+Use project terminology consistently.
+
+For example, if the project defines:
+
+    "Monitor"
+
+as the term for a monitored API,
+
+DO NOT randomly use:
+
+    API
+    Service
+    Endpoint
+    Check
+    Job
+
+as interchangeable terms.
+
+If different terms have different meanings,
+follow PROJECT_TERMINOLOGY.md exactly.
+
+
+# ============================================================
+# 32. "KIOSK" AND PROJECT-SPECIFIC WORDS
+# ============================================================
+
+Words such as:
+
+    Kiosk
+    Monitor
+    Check
+    Incident
+    Workspace
+    User
+    Team
+    Schedule
+
+may have project-specific meanings.
+
+Their meanings MUST be defined in:
+
+    PROJECT_TERMINOLOGY.md
+
+Cline must NOT assume the meaning of a project-specific term.
+
+When adding a new domain term:
+
+1. Add it to PROJECT_TERMINOLOGY.md.
+2. Define its meaning.
+3. Define where it should be used.
+4. Define what terms it replaces or should not be confused with.
+5. Then use the term in code.
+
+
+# ============================================================
+# 33. ROUTING
+# ============================================================
+
+Follow the project's existing routing system.
+
+Do not introduce a second routing mechanism.
+
+Routes should be simple and readable.
+
+Example:
+
+    /login
+    /dashboard
+    /monitors
+    /settings
+
+Do not create unnecessarily complicated nested routes.
+
+
+# ============================================================
+# 34. AUTHENTICATION
+# ============================================================
+
+Follow the existing authentication implementation.
+
+Do NOT replace the authentication architecture unless explicitly
+requested.
+
+Do not duplicate authentication logic across components.
+
+Authentication-related logic should remain centralized where
+possible.
+
+
+# ============================================================
+# 35. SECURITY
+# ============================================================
+
+Never expose:
+
+- Passwords
+- Secret keys
+- API secrets
+- JWT secrets
+- Database passwords
+- Private credentials
+
+Do not hardcode secrets.
+
+Use the project's existing environment-variable approach.
+
+
+# ============================================================
+# 36. DATABASE / BACKEND CHANGES
+# ============================================================
+
+If the project contains backend or database code:
+
+Before modifying it:
+
+1. Inspect existing entities.
+2. Inspect repositories.
+3. Inspect services.
+4. Inspect controllers.
+5. Understand relationships.
+6. Follow existing naming conventions.
+
+Do not introduce a new architecture without necessity.
+
+Keep backend code simple as well.
+
+
+# ============================================================
+# 37. DATABASE NAMING
+# ============================================================
+
+Follow existing database naming conventions.
+
+Do not rename existing entities, fields, or tables unless required.
+
+If a new database entity is needed:
+
+1. Define its purpose.
+2. Add terminology if required.
+3. Follow existing entity naming.
+4. Follow existing relationship patterns.
+5. Document the change in CHANGELOG.md.
+
+
+# ============================================================
+# 38. TESTING
+# ============================================================
+
+After every meaningful change:
+
+1. Check for syntax errors.
+2. Check imports.
+3. Check component references.
+4. Check routes.
+5. Check API calls.
+6. Check obvious UI issues.
+
+If tests exist:
+
+    Run relevant tests.
+
+Do not claim something was tested if it was not tested.
+
+
+# ============================================================
+# 39. BUILD / RUN CHECK
+# ============================================================
+
+Before declaring a feature complete:
+
+Check that:
+
+- The project builds.
+- Imports resolve.
+- Components render.
+- Routes work.
+- No obvious console errors exist.
+- Existing functionality still works.
+
+If something could not be tested, document it.
+
+
+# ============================================================
+# 40. FILE CREATION RULE
+# ============================================================
+
+Before creating a new file, ask:
+
+    "Can the existing files handle this cleanly?"
+
+If YES:
+
+    Modify the existing file.
+
+If NO:
+
+    Create a new appropriately named file.
+
+Every new file must have a clear responsibility.
+
+Do not create files merely to reduce a few lines of code.
+
+
+# ============================================================
+# 41. DELETION RULE
+# ============================================================
+
+Never delete a file simply because it appears unused.
+
+First:
+
+1. Search the project for references.
+2. Confirm it is genuinely unused.
+3. Confirm no route or import depends on it.
+4. Document the deletion.
+
+Then delete it.
+
+
+# ============================================================
+# 42. REFACTORING RULE
+# ============================================================
+
+Do not perform large refactors while implementing a small feature.
+
+Example:
+
+If the user asks:
+
+    "Add a delete button."
+
+DO NOT:
+
+- Rebuild the component architecture.
+- Rename 30 files.
+- Replace fetch with Axios.
+- Introduce Redux.
+- Replace Tailwind configuration.
+- Rewrite routing.
+
+Make the smallest change required.
+
+
+# ============================================================
+# 43. USER REQUEST PRIORITY
+# ============================================================
+
+Follow this priority:
+
+1. Explicit user requirement
+2. `.clinerules`
+3. `PROJECT_TERMINOLOGY.md`
+4. Existing project architecture
+5. Existing code patterns
+6. General best practices
+
+If an explicit user request conflicts with these rules,
+follow the explicit user request unless it creates a clear
+technical or security problem.
+
+Document significant deviations.
+
+
+# ============================================================
+# 44. BEFORE IMPLEMENTATION CHECKLIST
+# ============================================================
+
+Before coding:
+
+- Read `.clinerules`
+- Read `PROJECT_TERMINOLOGY.md`
+- Inspect project structure
+- Search for existing implementation
+- Identify reusable components
+- Identify affected files
+- Identify API changes
+- Identify UI changes
+- Identify terminology involved
+
+
+# ============================================================
+# 45. AFTER IMPLEMENTATION CHECKLIST
+# ============================================================
+
+After coding:
+
+- Verify imports
+- Verify component names
+- Verify Tailwind classes
+- Verify responsiveness
+- Verify existing functionality
+- Verify API calls
+- Verify loading/error states
+- Check for duplicate code
+- Check for unnecessary dependencies
+- Update CHANGELOG.md
+- Confirm terminology remains consistent
+
+
+# ============================================================
+# 46. FINAL RULE
+# ============================================================
+
+KEEP IT SIMPLE.
+
+The goal is NOT:
+
+    "Most advanced implementation."
+
+The goal is:
+
+    "Clean, understandable, maintainable implementation."
+
+When uncertain, prefer:
+
+    Less code
+    Fewer abstractions
+    Fewer dependencies
+    Smaller components
+    Clear names
+    Existing patterns
+    Tailwind utilities
+    Simple JavaScript
+    Explicit logic
+
+
+# ============================================================
+# END OF .CLINERULES
+# ============================================================

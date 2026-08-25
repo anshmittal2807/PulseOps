@@ -1,2 +1,42 @@
 @import "tailwindcss";
 
+@theme {
+    --color-primary: #48f6dc;
+    --color-secondary: #c5c0ff;
+    --color-tertiary-container: #ffb150;
+    --color-tertiary-fixed-dim: #ffb965;
+    --color-error: #f85149;
+    --color-warning: #e3b341;
+    --color-success: #3fb950;
+    --color-offline: #6e7681;
+
+    --color-background: #0b0f14;
+    --color-surface: #131920;
+    --color-surface-raised: #1b222b;
+    --color-surface-border: #232b35;
+    --color-on-surface: #dce4e1;
+    --color-on-surface-variant: #bacac5;
+
+    --font-headline: "Manrope", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+}
+
+/* Pulsing glow for healthy status dots */
+@keyframes status-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.status-pulse {
+    box-shadow: 0 0 8px rgba(63, 185, 80, 0.3);
+    animation: status-pulse 2s infinite;
+}
+
+
