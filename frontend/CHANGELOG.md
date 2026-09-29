@@ -1,3 +1,61 @@
+## 2026-09-13 - Convert Activity Log and Reports HTML mockups to React
+
+### Type
+Feature / Refactor
+
+### Summary
+Converted the "Activity Log" and "Reports" HTML mockups into React pages and
+added their routes.
+
+### Files Created
+- src/pages/ActivityLog.jsx
+- src/pages/Reports.jsx
+
+### Files Modified
+- src/router/Router.jsx (routes for /activity-log and /reports; page header titles)
+- CHANGELOG.md
+
+### Details
+- Activity Log page renders a feed of system events (Added API, Updated URL, Changed Interval, Changed Headers, Deleted API) with color-coded category labels and mono code chips, reusing the existing Tailwind @theme tokens.
+- Reports page shows a period selector (Today / Weekly / Monthly) with local state, a 4-card stats grid and a "Most Failed APIs" list with status-colored dots.
+- Both pages reuse the existing SideNavBar/TopNavBar layout; no new dependencies.
+
+### Testing
+- `npm run build` passes with no errors.
+## 2026-09-13 - Convert Dashboard, Alerts and API Details HTML mockups to React
+
+### Type
+Feature / Refactor
+
+### Summary
+Converted the Dashboard, Alerts and "API Details" HTML mockups into React pages
+and reusable components, and added them to the router.
+
+### Files Created
+- src/pages/Dashboard.jsx
+- src/pages/Alerts.jsx
+- src/pages/ApiDetails.jsx
+- src/components/dashboard/StatCard.jsx
+- src/components/dashboard/Charts.jsx
+- src/components/dashboard/RecentChecksTable.jsx
+- src/components/api/ApiLogsTable.jsx
+- PROJECT_TERMINOLOGY.md
+
+### Files Modified
+- src/router/Router.jsx (routes for /dashboard, /alerts and /apis/:id; page header titles in TopNavBar)
+- src/components/layout/TopNavBar.jsx (optional title and "Add API" button props)
+- src/styles.css (re-organized custom CSS: status-pulse, pulse-pip classes)
+- CHANGELOG.md
+
+### Details
+- Dashboard page shows six StatCards, three SVG charts (line, doughnut, bar) and a Recent Checks table.
+- Charts are implemented with plain SVG (no Chart.js dependency) to keep the code simple and dependency-free.
+- Alerts page has its own local state with a "mark as read" action per alert.
+- API Details page at /apis/:id shows stat cards, Last 50 Logs table, Error/Downtime history, Headers and Request Body panels.
+- All pages reuse the existing SideNavBar/TopNavBar layout and Tailwind @theme tokens.
+
+### Testing
+- `npm run build` passes with no errors.
 ## 2026-08-25 - Add "Add New API" page
 
 ### Type

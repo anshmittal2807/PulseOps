@@ -1,13 +1,15 @@
 import StatusBadge from "./StatusBadge.jsx";
+import { useNavigate } from "react-router-dom";
 
 function ApiTable({ apis }) {
+    const navigate = useNavigate();
     return (
-        <div className="bg-surface border border-surface-border rounded-lg overflow-hidden">
-            <table className="w-full text-left border-collapse">
+        <div className="bg-surface border border-surface-border rounded-xl overflow-x-auto">
+            <table className="w-full min-w-[980px] text-left border-collapse">
                 <thead>
                     <tr className="border-b border-surface-border bg-background">
-                        <th className="px-4 py-3 font-body text-xs font-semibold tracking-wider uppercase text-on-surface-variant">Name</th>
-                        <th className="px-4 py-3 font-body text-xs font-semibold tracking-wider uppercase text-on-surface-variant">URL</th>
+                        <th className="px-5 py-3 font-body text-[11px] font-semibold tracking-wide text-on-surface-variant">Monitor</th>
+                        <th className="px-4 py-3 font-body text-[11px] font-semibold tracking-wide text-on-surface-variant">Endpoint</th>
                         <th className="px-4 py-3 w-24 font-body text-xs font-semibold tracking-wider uppercase text-on-surface-variant">Method</th>
                         <th className="px-4 py-3 w-32 font-body text-xs font-semibold tracking-wider uppercase text-on-surface-variant">Status</th>
                         <th className="px-4 py-3 text-right w-32 font-body text-xs font-semibold tracking-wider uppercase text-on-surface-variant">Response</th>
@@ -26,9 +28,14 @@ function ApiTable({ apis }) {
                     {apis.map((api) => (
                         <tr
                             key={api.id}
-                            className={`border-b border-surface-border last:border-b-0 hover:bg-surface-raised transition-colors ${api.status === "Offline" ? "opacity-50" : ""}`}
+                            onClick={() => navigate(`/apis/${api.id}`)}
+                            tabIndex="0"
+                            onKeyDown={(event) => { if (event.key === "Enter") navigate(`/apis/${api.id}`); }}
+                            className={`border-b border-surface-border last:border-b-0 hover:bg-surface-raised transition-colors cursor-pointer focus:outline-none focus:bg-surface-raised ${api.status === "Offline" ? "opacity-60" : ""}`}
                         >
-                            <td className="px-4 py-3 font-headline text-[18px] leading-6 font-semibold text-on-surface">{api.name}</td>
+                            <td className="px-5 py-4 font-body text-sm font-semibold text-on-surface">
+                                <div className="flex items-center gap-2">{api.name}{api.paused && <span className="text-[10px] uppercase font-body tracking-wider text-warning border border-warning/30 rounded px-1.5">Paused</span>}</div>
+                            </td>
                             <td className="px-4 py-3 font-mono text-sm text-on-surface-variant">{api.url}</td>
                             <td className={`px-4 py-3 font-mono text-sm ${api.method === "POST" ? "text-secondary" : "text-tertiary-container"}`}>
                                 {api.method}

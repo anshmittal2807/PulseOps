@@ -1,21 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #48f6dc;
-    --color-secondary: #c5c0ff;
-    --color-tertiary-container: #ffb150;
-    --color-tertiary-fixed-dim: #ffb965;
-    --color-error: #f85149;
-    --color-warning: #e3b341;
-    --color-success: #3fb950;
-    --color-offline: #6e7681;
+    /* PulseOps flat palette: navy structure, blue actions, solid status colors. */
+    --color-primary: #2563EB;
+    --color-primary-soft: #DBEAFE;
+    --color-secondary: #0F766E;
+    --color-tertiary-container: #7C3AED;
+    --color-tertiary-fixed-dim: #6D28D9;
+    --color-error: #DC2626;
+    --color-warning: #D97706;
+    --color-success: #059669;
+    --color-offline: #64748B;
 
-    --color-background: #0b0f14;
-    --color-surface: #131920;
-    --color-surface-raised: #1b222b;
-    --color-surface-border: #232b35;
-    --color-on-surface: #dce4e1;
-    --color-on-surface-variant: #bacac5;
+    --color-background: #F1F5F9;
+    --color-surface: #FFFFFF;
+    --color-surface-muted: #0F172A;
+    --color-surface-raised: #EFF6FF;
+    --color-surface-border: #CBD5E1;
+    --color-on-surface: #0F172A;
+    --color-on-surface-variant: #475569;
 
     --font-headline: "Manrope", sans-serif;
     --font-body: "Inter", sans-serif;
@@ -25,6 +28,53 @@
 body {
     background-color: var(--color-background);
     color: var(--color-on-surface);
+    font-family: var(--font-body);
+    min-width: 320px;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+    outline-offset: 3px;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled),
+select:not(:disabled) {
+    cursor: pointer;
+}
+
+::selection {
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 3px solid var(--color-background);
+    border-radius: 999px;
+    background: var(--color-primary-soft);
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 450, "GRAD" 0, "opsz" 24;
 }
 
 /* Pulsing glow for healthy status dots */
@@ -35,8 +85,7 @@ body {
 }
 
 .status-pulse {
-    box-shadow: 0 0 8px rgba(63, 185, 80, 0.3);
-    animation: status-pulse 2s infinite;
+    box-shadow: 0 0 0 3px #A7F3D0;
 }
 
 

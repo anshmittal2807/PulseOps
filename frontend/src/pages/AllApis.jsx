@@ -1,77 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiTable from "../components/api/ApiTable.jsx";
-
-const apis = [
-    {
-        id: 1,
-        name: "Authentication Service",
-        url: "auth.pulseops.io",
-        method: "POST",
-        status: "Healthy",
-        responseTime: "120ms",
-        environment: "Production",
-        lastChecked: "2 mins ago",
-        tags: ["Core"],
-    },
-    {
-        id: 2,
-        name: "Payment Gateway",
-        url: "api.stripe.com",
-        method: "POST",
-        status: "Healthy",
-        responseTime: "340ms",
-        environment: "Production",
-        lastChecked: "4 mins ago",
-        tags: ["External"],
-    },
-    {
-        id: 3,
-        name: "Notification Service",
-        url: "notify.internal",
-        method: "GET",
-        status: "Critical",
-        responseTime: "timeout",
-        environment: "Staging",
-        lastChecked: "6 mins ago",
-        tags: ["Core"],
-    },
-    {
-        id: 4,
-        name: "Inventory Service",
-        url: "inv-svc.cluster.local",
-        method: "GET",
-        status: "Warning",
-        responseTime: "850ms",
-        environment: "Production",
-        lastChecked: "10 mins ago",
-        tags: ["Core"],
-    },
-    {
-        id: 5,
-        name: "Delivery Partner API",
-        url: "partner-api.com",
-        method: "POST",
-        status: "Offline",
-        responseTime: "0ms",
-        environment: "Beta",
-        lastChecked: "15 mins ago",
-        tags: ["External"],
-    },{
-        id: 5,
-        name: "Delivery Partner API",
-        url: "partner-api.com",
-        method: "POST",
-        status: "Offline",
-        responseTime: "0ms",
-        environment: "Beta",
-        lastChecked: "15 mins ago",
-        tags: ["External"],
-    },  
-];
+import EmptyState from "../components/ui/EmptyState.jsx";
+import SyncBanner from "../components/ui/SyncBanner.jsx";
+import { SkeletonRows } from "../components/ui/Spinner.jsx";
+import { useDemo } from "../context/DemoContext.jsx";
 
 function AllApis() {
     const navigate = useNavigate();
+    const { apis, syncing } = useDemo();
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("All Statuses");
     const [environment, setEnvironment] = useState("All Envs");
@@ -98,24 +35,17 @@ function AllApis() {
     });
 
     return (
-        <main className="flex-1 p-6 pt-0">
-            <div className="flex justify-between items-center mb-8">
-                <h2 className="font-headline text-2xl font-semibold text-on-surface">All APIs</h2>
-                <button
-                    type="button"
-                    onClick={() => navigate("/apis/add")}
-                    className="bg-primary text-background font-body text-sm font-semibold px-4 py-2 rounded flex items-center gap-2 active:scale-[0.98] transition-transform hover:bg-[#00b39e]"
-                >
-                    <span className="material-symbols-outlined text-[18px]">add</span>
-                    Add API
-                </button>
+        <main className="flex-1 px-4 py-6 md:px-8 md:py-7">
+            <div className="max-w-[1480px] mx-auto">
+            <SyncBanner />
+            <div className="flex justify-between items-end mb-6">
+                <div><h1 className="font-headline text-xl md:text-2xl font-semibold tracking-[-0.02em] text-on-surface">API monitors</h1><p className="text-sm text-on-surface-variant mt-1">Manage health checks, thresholds, and endpoint status.</p></div>
+                <button type="button" onClick={() => navigate("/apis/add")} className="sm:hidden bg-primary text-white font-body text-sm font-semibold px-3.5 py-2 rounded-lg flex items-center gap-2"><span className="material-symbols-outlined text-[18px]">add</span>Add monitor</button>
             </div>
 
-            <div className="bg-surface border border-surface-border rounded-lg p-4 mb-6 flex flex-wrap gap-4 items-end">
+            <div className="bg-surface border border-surface-border rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-end">
                 <div className="flex-1 min-w-[200px]">
-                    <label htmlFor="api-search" className="block text-xs font-semibold tracking-wider uppercase text-on-surface-variant mb-2">
-                        Search
-                    </label>
+                    <label htmlFor="api-search" className="block text-xs font-medium text-on-surface-variant mb-2">Search monitors</label>
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
                         <input
@@ -124,12 +54,12 @@ function AllApis() {
                             value={search}
                             onChange={(event) => setSearch(event.target.value)}
                             placeholder="Search by name or URL"
-                            className="w-full bg-background border border-surface-border rounded pl-10 pr-4 py-2 text-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:ring-0 transition-colors"
+                            className="w-full h-10 bg-background border border-surface-border rounded-lg pl-10 pr-4 text-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-colors"
                         />
                     </div>
                 </div>
 
-                <div className="w-[140px]">
+                <div className="w-[140px] flex-1 sm:flex-none">
                     <label htmlFor="filter-status" className="block text-xs font-semibold tracking-wider uppercase text-on-surface-variant mb-2">
                         Status
                     </label>
@@ -147,7 +77,7 @@ function AllApis() {
                     </select>
                 </div>
 
-                <div className="w-[140px]">
+                <div className="w-[140px] flex-1 sm:flex-none">
                     <label htmlFor="filter-environment" className="block text-xs font-semibold tracking-wider uppercase text-on-surface-variant mb-2">
                         Environment
                     </label>
@@ -160,11 +90,11 @@ function AllApis() {
                         <option>All Envs</option>
                         <option>Production</option>
                         <option>Staging</option>
-                        <option>Beta</option>
+                        <option>Development</option>
                     </select>
                 </div>
 
-                <div className="w-[120px]">
+                <div className="w-[120px] flex-1 sm:flex-none">
                     <label htmlFor="filter-method" className="block text-xs font-semibold tracking-wider uppercase text-on-surface-variant mb-2">
                         Method
                     </label>
@@ -177,10 +107,13 @@ function AllApis() {
                         <option>All Methods</option>
                         <option>GET</option>
                         <option>POST</option>
+                        <option>PUT</option>
+                        <option>PATCH</option>
+                        <option>DELETE</option>
                     </select>
                 </div>
 
-                <div className="w-[140px]">
+                <div className="w-[140px] flex-1 sm:flex-none">
                     <label htmlFor="filter-tags" className="block text-xs font-semibold tracking-wider uppercase text-on-surface-variant mb-2">
                         Tags
                     </label>
@@ -191,13 +124,25 @@ function AllApis() {
                         className="w-full bg-background border border-surface-border rounded px-3 py-2 text-sm text-on-surface focus:border-primary focus:ring-0 transition-colors appearance-none"
                     >
                         <option>All Tags</option>
-                        <option>Core</option>
-                        <option>External</option>
+                        {[...new Set(apis.flatMap((api) => api.tags))].map((item) => <option key={item}>{item}</option>)}
                     </select>
                 </div>
             </div>
 
-            <ApiTable apis={filteredApis} />
+            {syncing && apis.length === 0 ? (
+                <SkeletonRows rows={5} />
+            ) : apis.length === 0 ? (
+                <EmptyState
+                    icon="api"
+                    title="No monitors yet"
+                    hint="Add your first API endpoint to start tracking uptime, latency and incidents."
+                    actionLabel="Add monitor"
+                    actionTo="/apis/add"
+                />
+            ) : (
+                <ApiTable apis={filteredApis} />
+            )}
+            </div>
         </main>
     );
 }
