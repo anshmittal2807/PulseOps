@@ -7,6 +7,8 @@ import { inputClassName } from "../utils/formClasses.js";
 import FormField from "../components/ui/FormField.jsx";
 import AlertBanner from "../components/ui/AlertBanner.jsx";
 
+const SETTINGS_KEY = "pulseops-preferences";
+
 function DemoSettings() {
     const { pathname } = useLocation();
     const { notify, backendMode } = useDemo();
@@ -20,12 +22,7 @@ function DemoSettings() {
     const [profileError, setProfileError] = useState(null);
     const [formError, setFormError] = useState(null);
     const [saving, setSaving] = useState(false);
-    const [settings, setSettings] = useState({
-        emailAlerts: true,
-        desktopAlerts: false,
-        timezone: browserTimezone(),
-        retention: "30 days",
-    });
+    const [settings, setSettings] = useState(loadPreferences);
 
     const updateName = (value) => {
         setProfile((current) => ({ ...current, name: value }));
@@ -56,6 +53,12 @@ function DemoSettings() {
                 setFormError("You are signed out. Sign in again to update your profile.");
             }
         } else {
+            try {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+            } catch {
+                setFormError("Browser storage is unavailable, so preferences could not be saved.");
+                return;
+            }
             notify("Preferences saved (local to this browser)");
         }
     };
@@ -91,8 +94,8 @@ function DemoSettings() {
                         <Field label="Email address (cannot be changed)"><input type="email" className={`${fieldClass} opacity-60`} value={profile.email} disabled /></Field>
                         <Field label="Role"><input className={`${fieldClass} opacity-60`} value={profile.role} disabled /></Field>
                     </> : <>
-                        <Toggle label="Email alerts" description="How email notification preferences would work." checked={settings.emailAlerts} onChange={(value) => setSettings({ ...settings, emailAlerts: value })} />
-                        <Toggle label="Desktop alerts" description="Display preference only; no browser permission is requested." checked={settings.desktopAlerts} onChange={(value) => setSettings({ ...settings, desktopAlerts: value })} />
+                        <Toggle label="Email alerts" description="Remember whether email notifications should be enabled when a delivery provider is connected." checked={settings.emailAlerts} onChange={(value) => setSettings({ ...settings, emailAlerts: value })} />
+                        <Toggle label="Desktop alerts" description="Remember your desktop notification preference for this browser." checked={settings.desktopAlerts} onChange={(value) => setSettings({ ...settings, desktopAlerts: value })} />
                         <Field label="Timezone"><select className={fieldClass} value={settings.timezone} onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}>{TIMEZONES.map((tz) => <option key={tz}>{tz}</option>)}</select></Field>
                         <Field label="Log retention"><select className={fieldClass} value={settings.retention} onChange={(e) => setSettings({ ...settings, retention: e.target.value })}><option>7 days</option><option>30 days</option><option>90 days</option></select></Field>
                     </>}
@@ -121,6 +124,16 @@ function browserTimezone() {
         }
     } catch { /* ignore */ }
     return "UTC";
+}
+
+function loadPreferences() {
+    const defaults = { emailAlerts: true, desktopAlerts: false, timezone: browserTimezone(), retention: "30 days" };
+    try {
+        const stored = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+        return stored && typeof stored === "object" ? { ...defaults, ...stored } : defaults;
+    } catch {
+        return defaults;
+    }
 }
 
 function Field({ label, children }) { return <label className="text-sm text-on-surface-variant flex flex-col gap-2">{label}{children}</label>; }

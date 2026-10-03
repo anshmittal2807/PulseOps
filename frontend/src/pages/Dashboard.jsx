@@ -42,7 +42,7 @@ function Dashboard() {
     const trendValues = trendSamples.map((log) => log.responseTimeMs);
     const trendLabels = trendSamples.map((log) => formatTick(log.checkedAt));
 
-    const unreadAlerts = alerts.filter((alert) => alert.unread);
+    const unreadAlerts = alerts.filter((alert) => alert.unread && alert.severity !== "recovered");
     const bannerDetail = unreadAlerts.slice(0, 2)
         .map((alert) => `${alert.service}: ${alert.message}`)
         .join(" · ");

@@ -58,6 +58,7 @@ function ApiDetails() {
                         {api.description && <p className="text-sm text-on-surface-variant max-w-2xl">{api.description}</p>}
                     </div>
                     <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={() => navigate(`/apis/${api.id}/edit`)} className="border border-surface-border rounded px-4 py-2 text-sm hover:bg-surface-raised flex items-center gap-2"><span className="material-symbols-outlined text-lg">edit</span>Edit</button>
                         <button type="button" onClick={handleToggle} className="border border-surface-border rounded px-4 py-2 text-sm hover:bg-surface-raised flex items-center gap-2"><span className="material-symbols-outlined text-lg">{api.paused ? "play_arrow" : "pause"}</span>{api.paused ? "Resume" : "Pause"}</button>
                         <button type="button" onClick={handleCheck} disabled={checking || api.paused} className="bg-primary text-white rounded px-4 py-2 text-sm font-semibold disabled:opacity-40 flex items-center gap-2 hover:bg-blue-700"><span className={`material-symbols-outlined text-lg ${checking ? "animate-spin" : ""}`}>{checking ? "progress_activity" : "play_circle"}</span>{checking ? "Running…" : "Run live check"}</button>
                         <button type="button" onClick={() => setConfirmingDelete(true)} className="border border-error/40 text-error rounded px-3 py-2 hover:bg-error/10" aria-label="Delete API"><span className="material-symbols-outlined text-lg">delete</span></button>

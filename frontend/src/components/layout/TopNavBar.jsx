@@ -5,13 +5,14 @@ import { useAuth } from "../../context/AuthContext.jsx";
 
 function TopNavBar({ title, crumb, onAddApi, onMenu }) {
     const navigate = useNavigate();
-    const { alerts, syncing } = useDemo();
+    const { alerts, apis, syncing } = useDemo();
     const { user, logout } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
     const unread = alerts.filter((alert) => alert.unread).length;
-    const criticalOpen = alerts.some((alert) => alert.unread && alert.severity === "critical");
-    const systemOk = unread === 0;
-    const statusText = syncing ? "Syncing…" : systemOk ? "All systems operational" : `${unread} open alert${unread === 1 ? "" : "s"}`;
+    const problemMonitors = apis.filter((monitor) => !monitor.paused && monitor.status !== "Healthy");
+    const criticalOpen = problemMonitors.some((monitor) => monitor.status === "Critical" || monitor.status === "Offline");
+    const systemOk = problemMonitors.length === 0;
+    const statusText = syncing ? "Syncing…" : systemOk ? "All systems operational" : `${problemMonitors.length} monitor${problemMonitors.length === 1 ? "" : "s"} need attention`;
     const initials = (user?.name || "PO").split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 
     const handleLogout = () => {
@@ -33,7 +34,7 @@ function TopNavBar({ title, crumb, onAddApi, onMenu }) {
                     </div>
                 </div>
                 <div className="flex items-center gap-2 md:gap-3">
-                    <div className="hidden xl:flex items-center gap-2 text-xs text-on-surface-variant px-3 py-2 rounded-lg border border-surface-border bg-background" title="Live status derived from open alerts">
+                    <div className="hidden xl:flex items-center gap-2 text-xs text-on-surface-variant px-3 py-2 rounded-lg border border-surface-border bg-background" title="Live status derived from active monitors">
                         <span className={`w-1.5 h-1.5 rounded-full ${systemOk ? "bg-success shadow-[0_0_0_3px_#A7F3D0]" : criticalOpen ? "bg-error shadow-[0_0_0_3px_#FECACA]" : "bg-warning"}`}></span>
                         {statusText}
                     </div>

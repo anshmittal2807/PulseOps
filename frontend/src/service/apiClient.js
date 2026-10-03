@@ -94,6 +94,7 @@ export const api = {
     listActivity: () => apiRequest("/activity"),
     dashboardStats: () => apiRequest("/dashboard/stats"),
     recentChecks: (limit = 60) => apiRequest(`/dashboard/recent-checks?limit=${limit}`),
+    report: (period = "weekly") => apiRequest(`/dashboard/report?period=${encodeURIComponent(period)}`),
     probeMonitor: (data) => apiRequest("/apis/probe", { method: "POST", body: data }),
     health: () => apiRequest("/health", { auth: false }),
 };

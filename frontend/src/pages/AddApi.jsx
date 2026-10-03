@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toCreatePayload, useDemo } from "../context/DemoContext.jsx";
 import { api } from "../service/apiClient.js";
 import { AUTH_TYPES, ENVIRONMENTS, INTERVALS, METHODS, hasErrors, mapBackendErrors, validateMonitorForm } from "../utils/validators.js";
@@ -11,17 +11,41 @@ const selectClasses = (hasError) => `${inputClassName(hasError)} appearance-none
 
 function AddApi() {
     const navigate = useNavigate();
-    const { addApi, notify } = useDemo();
-    const [form, setForm] = useState({ name: "", url: "", method: "GET", environment: "Production", description: "", expectedStatus: 200, threshold: 500, interval: "5", authType: "None", requestBody: "" });
+    const { id } = useParams();
+    const isEditing = Boolean(id);
+    const { apis, addApi, updateApi, fetchApiDetails, notify } = useDemo();
+    const existing = apis.find((item) => String(item.id) === String(id));
+    const fetchStarted = useRef(false);
+    const [hydrated, setHydrated] = useState(!isEditing || Boolean(existing));
+    const [form, setForm] = useState(() => monitorForm(existing));
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState(null);
-    const [headers, setHeaders] = useState([{ key: "Content-Type", value: "application/json" }]);
-    const [tags, setTags] = useState(["Core"]);
+    const [headers, setHeaders] = useState(() => existing?.headers?.length ? existing.headers : [{ key: "Content-Type", value: "application/json" }]);
+    const [tags, setTags] = useState(() => existing?.tags?.length ? existing.tags : ["Core"]);
     const [tagInput, setTagInput] = useState("");
     const [tagError, setTagError] = useState(null);
     const [testing, setTesting] = useState(false);
     const [testResult, setTestResult] = useState(null);
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        if (!isEditing || hydrated) return;
+        if (existing) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate an edit form after its API request resolves
+            setForm(monitorForm(existing));
+            setHeaders(existing.headers?.length ? existing.headers : []);
+            setTags(existing.tags?.length ? existing.tags : []);
+            setHydrated(true);
+            return;
+        }
+        if (!fetchStarted.current) {
+            fetchStarted.current = true;
+            fetchApiDetails(id).catch((error) => {
+                setFormError(error.message || "Monitor not found.");
+                setHydrated(true);
+            });
+        }
+    }, [existing, fetchApiDetails, hydrated, id, isEditing]);
 
     const update = (field, value) => {
         setForm((current) => ({ ...current, [field]: value }));
@@ -89,7 +113,7 @@ function AddApi() {
                 headers,
                 requestBody: form.requestBody,
             }));
-            setTestResult({ ok: result.success, code: result.statusCode, time: result.responseTimeMs, message: result.message });
+            setTestResult({ ok: result.success, code: result.statusCode, time: result.responseTimeMs, message: result.message, status: result.status });
         } catch (error) {
             const backendErrors = mapBackendErrors(error.payload);
             if (hasErrors(backendErrors)) {
@@ -124,8 +148,8 @@ function AddApi() {
         };
         try {
             setSaving(true);
-            const id = await addApi(payload);
-            navigate(`/apis/${id}`);
+            const savedId = isEditing ? await updateApi(id, payload) : await addApi(payload);
+            navigate(`/apis/${savedId}`);
         } catch (error) {
             const backendErrors = mapBackendErrors(error.payload);
             if (hasErrors(backendErrors)) {
@@ -140,12 +164,16 @@ function AddApi() {
         }
     };
 
+    if (isEditing && !hydrated) {
+        return <main className="flex-1 p-10 text-center text-on-surface-variant">Loading monitor configuration…</main>;
+    }
+
     return (
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-6">
-                    <h1 className="font-headline text-xl md:text-2xl font-semibold text-on-surface mb-1">Add New API Endpoint</h1>
-                    <p className="text-on-surface-variant text-sm">Create a live monitor. The scheduler will start health-checking it automatically on its interval.</p>
+                    <h1 className="font-headline text-xl md:text-2xl font-semibold text-on-surface mb-1">{isEditing ? "Edit API monitor" : "Add New API Endpoint"}</h1>
+                    <p className="text-on-surface-variant text-sm">{isEditing ? "Update the request, schedule, and health criteria for this monitor." : "Create a live monitor. The scheduler will start health-checking it automatically on its interval."}</p>
                 </div>
                 <form onSubmit={handleSave} noValidate className="bg-surface border border-surface-border rounded-xl p-5 md:p-6 flex flex-col gap-6">
                     <AlertBanner>{formError}</AlertBanner>
@@ -237,7 +265,7 @@ function AddApi() {
                         {(tagError || errors.tags) && <p className="text-error text-xs" role="alert">{tagError || errors.tags}</p>}
                     </div>
 
-                    {testResult && testResult.ok && <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-success flex items-center gap-2"><span className="material-symbols-outlined">check_circle</span>Live probe succeeded · {testResult.code} · {testResult.time}ms</div>}
+                    {testResult && testResult.ok && <div className={`rounded-lg border px-4 py-3 text-sm flex items-center gap-2 ${testResult.status === "Warning" ? "border-warning/30 bg-warning/10 text-warning" : "border-emerald-200 bg-emerald-50 text-success"}`}><span className="material-symbols-outlined">{testResult.status === "Warning" ? "warning" : "check_circle"}</span>Live probe {testResult.status === "Warning" ? "responded slowly" : "succeeded"} · {testResult.code} · {testResult.time}ms</div>}
                     {testResult && !testResult.ok && <div className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error flex items-center gap-2" role="alert"><span className="material-symbols-outlined">error</span>{testResult.code !== null && testResult.code !== undefined ? `Live probe failed · ${testResult.code} · ` : "Live probe failed · "}{testResult.message}</div>}
 
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-5 border-t border-surface-border">
@@ -248,7 +276,7 @@ function AddApi() {
                             <button type="button" onClick={() => { notify("Changes discarded", "error"); navigate("/apis"); }} className="border border-surface-border text-on-surface px-5 py-2 rounded-lg text-sm font-semibold hover:bg-surface-raised">Cancel</button>
                             <button type="submit" disabled={saving} className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2">
                                 {saving && <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>}
-                                {saving ? "Saving…" : "Save API"}
+                                {saving ? "Saving…" : isEditing ? "Save changes" : "Save API"}
                             </button>
                         </div>
                     </div>
@@ -259,5 +287,20 @@ function AddApi() {
 }
 
 function SectionTitle({ children }) { return <h3 className="font-headline text-lg font-semibold text-on-surface border-t border-surface-border pt-5">{children}</h3>; }
+
+function monitorForm(api) {
+    return {
+        name: api?.name || "",
+        url: api?.url || "",
+        method: api?.method || "GET",
+        environment: api?.environment || "Production",
+        description: api?.description || "",
+        expectedStatus: api?.expectedStatus ?? 200,
+        threshold: api?.threshold ?? 500,
+        interval: String(api?.interval ?? 5),
+        authType: api?.authType || "None",
+        requestBody: api?.requestBody || "",
+    };
+}
 
 export default AddApi;

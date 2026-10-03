@@ -42,6 +42,7 @@ function AppLayout() {
     const [navOpen, setNavOpen] = useState(false)
     const header = pageHeaders[location.pathname]
         || (location.pathname === '/apis/add' ? { title: 'Add API' } : null)
+        || (location.pathname.endsWith('/edit') ? { title: 'Edit API' } : null)
         || (location.pathname.startsWith('/apis/') ? { title: 'API Details' } : null)
         || { title: 'PulseOps' }
 
@@ -80,6 +81,7 @@ const router = createBrowserRouter([
                     { path: 'dashboard', element: <Dashboard /> },
                     { path: 'apis', element: <AllApis /> },
                     { path: 'apis/add', element: <AddApi /> },
+                    { path: 'apis/:id/edit', element: <AddApi /> },
                     { path: 'apis/:id', element: <ApiDetails /> },
                     { path: 'alerts', element: <Alerts /> },
                     { path: 'reports', element: <Reports /> },

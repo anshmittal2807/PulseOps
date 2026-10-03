@@ -65,6 +65,32 @@ function requireToken() {
     }
 }
 
+function deriveDowntimeHistory(logs) {
+    const chronological = [...(logs || [])]
+        .filter((log) => log.checkedAt)
+        .sort((a, b) => new Date(a.checkedAt) - new Date(b.checkedAt));
+    const incidents = [];
+    let startedAt = null;
+
+    for (const log of chronological) {
+        if (!log.success && !startedAt) startedAt = new Date(log.checkedAt);
+        if (log.success && startedAt) {
+            incidents.push({ start: startedAt, end: new Date(log.checkedAt), ongoing: false });
+            startedAt = null;
+        }
+    }
+    if (startedAt) incidents.push({ start: startedAt, end: new Date(), ongoing: true });
+
+    return incidents.reverse().slice(0, 10).map((incident, index) => {
+        const minutes = Math.max(1, Math.round((incident.end - incident.start) / 60000));
+        const start = incident.start.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+        const end = incident.ongoing
+            ? "Ongoing"
+            : incident.end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        return { id: `${incident.start.toISOString()}-${index}`, range: `${start} – ${end}`, duration: `${minutes} min` };
+    });
+}
+
 export function DemoProvider({ children }) {
     const { isLoggedIn } = useAuth();
     const backendMode = isLoggedIn && Boolean(getToken());
@@ -114,6 +140,20 @@ export function DemoProvider({ children }) {
         else setState(emptyState());
     }, [backendMode, refresh]);
 
+    // Keep scheduler-driven changes visible without requiring a page reload.
+    useEffect(() => {
+        if (!backendMode) return undefined;
+        const syncWhenVisible = () => {
+            if (document.visibilityState === "visible") refresh();
+        };
+        const timer = window.setInterval(syncWhenVisible, 30000);
+        document.addEventListener("visibilitychange", syncWhenVisible);
+        return () => {
+            window.clearInterval(timer);
+            document.removeEventListener("visibilitychange", syncWhenVisible);
+        };
+    }, [backendMode, refresh]);
+
     /** Fetch full detail (api + last 50 recorded checks) for one monitor. */
     const fetchApiDetails = useCallback(async (id) => {
         requireToken();
@@ -123,9 +163,12 @@ export function DemoProvider({ children }) {
             .filter((l) => !l.success)
             .slice(0, 10)
             .map((l) => ({ id: l.id, timestamp: l.timestamp, message: l.errorMessage || `HTTP ${l.statusCode}` }));
+        mapped.downtimeHistory = deriveDowntimeHistory(bundle.logs || []);
         setState((current) => ({
             ...current,
-            apis: current.apis.map((item) => String(item.id) === String(id) ? { ...item, ...mapped } : item),
+            apis: current.apis.some((item) => String(item.id) === String(id))
+                ? current.apis.map((item) => String(item.id) === String(id) ? { ...item, ...mapped } : item)
+                : [mapped, ...current.apis],
         }));
         return mapped;
     }, []);
@@ -136,6 +179,18 @@ export function DemoProvider({ children }) {
             await refresh();
             notify(`${created.name} added to monitoring`);
             return created.id;
+        });
+    };
+
+    const updateApi = (id, values) => {
+        requireToken();
+        return api.updateApi(id, toCreatePayload(values)).then(async (updated) => {
+            await refresh();
+            notify(`${updated.name} updated`);
+            return updated.id;
+        }).catch((error) => {
+            notify(error.message || "Could not update monitor", "error");
+            throw error;
         });
     };
 
@@ -191,7 +246,7 @@ export function DemoProvider({ children }) {
 
     const value = useMemo(() => ({
         ...state,
-        addApi, runCheck, togglePaused, deleteApi,
+        addApi, updateApi, runCheck, togglePaused, deleteApi,
         markAlertRead, markAllAlertsRead, notify,
         fetchApiDetails, refresh,
         backendMode, syncing, syncError,

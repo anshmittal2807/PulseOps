@@ -7,6 +7,7 @@ import { SkeletonRows } from "../components/ui/Spinner.jsx";
 const severityStyles = {
     critical: { bar: "bg-error", badge: "text-white bg-error border-error", dot: "bg-white" },
     warning: { bar: "bg-warning", badge: "text-white bg-warning border-warning", dot: "bg-white" },
+    recovered: { bar: "bg-success", badge: "text-white bg-success border-success", dot: "bg-white" },
 };
 
 function AlertRow({ alert, onMarkRead, onOpen }) {
@@ -61,7 +62,7 @@ function Alerts() {
             <div className="max-w-5xl mx-auto flex flex-col gap-6">
                 <SyncBanner />
                 <header className="mb-4 flex items-center justify-between">
-                    <div><h2 className="font-headline text-2xl font-semibold text-on-surface">Active Alerts</h2><p className="text-sm text-on-surface-variant mt-1">{unread} unread alert{unread === 1 ? "" : "s"}</p></div>
+                    <div><h2 className="font-headline text-2xl font-semibold text-on-surface">Alert history</h2><p className="text-sm text-on-surface-variant mt-1">{unread} unread notification{unread === 1 ? "" : "s"}</p></div>
                     <button type="button" onClick={markAllAlertsRead} disabled={unread === 0} className="border border-surface-border rounded px-4 py-2 text-sm text-on-surface hover:bg-surface-raised disabled:opacity-40">Mark all read</button>
                 </header>
                 {syncing && items.length === 0 ? (
