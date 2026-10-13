@@ -13,8 +13,8 @@ function PasswordInput({ id, value, onChange, placeholder = "••••••�
                 onBlur={onBlur}
                 placeholder={placeholder}
                 autoComplete={autoComplete}
-                minLength={12}
-                maxLength={100}
+                minLength={7}
+                maxLength={24}
                 required
                 className={`${className} pr-11`}
             />

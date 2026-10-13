@@ -72,16 +72,16 @@ function Register() {
                         <p className="text-sm text-on-surface-variant mt-1">A fresh workspace with demo monitors is set up instantly.</p>
                     </div>
                     <AlertBanner>{formError}</AlertBanner>
-                    <FormField label="Display name" error={errors.name} htmlFor="register-name">
+                    <FormField label="Username" error={errors.name} htmlFor="register-name">
                         <input
                             id="register-name"
-                            autoComplete="name"
-                            minLength={2}
-                            maxLength={120}
+                            autoComplete="username"
+                            minLength={3}
+                            maxLength={30}
                             required
                             value={form.name}
                             onChange={(e) => update("name", e.target.value)}
-                            placeholder="Ada Lovelace"
+                            placeholder="ansh.mittal"
                             aria-invalid={Boolean(errors.name)}
                             className={AuthInputClassName(errors.name)}
                         />
@@ -108,7 +108,7 @@ function Register() {
                                 onChange={(e) => update("password", e.target.value)}
                                 onBlur={() => setTouchedPassword(true)}
                                 autoComplete="new-password"
-                                placeholder="At least 12 characters"
+                                placeholder="7 to 24 characters"
                                 className={AuthInputClassName(errors.password)}
                             />
                         </FormField>

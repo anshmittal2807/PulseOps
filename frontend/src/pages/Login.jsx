@@ -86,7 +86,7 @@ function Login() {
                             id="login-password"
                             value={form.password}
                             onChange={(e) => update("password", e.target.value)}
-                            placeholder="At least 12 characters"
+                            placeholder="7 to 24 characters"
                             className={AuthInputClassName(errors.password)}
                         />
                     </FormField>

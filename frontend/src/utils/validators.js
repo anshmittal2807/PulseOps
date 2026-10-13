@@ -1,11 +1,12 @@
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const EMAIL_RE = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
+const USERNAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const URL_RE = /^https?:\/\/.+/;
 const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const ENVIRONMENTS = ["Production", "Staging", "Development"];
 const INTERVALS = [1, 5, 15, 30];
 const AUTH_TYPES = ["None", "Bearer", "API Key", "Basic"];
-const PASSWORD_MIN_LENGTH = 12;
-const PASSWORD_MAX_LENGTH = 100;
+const PASSWORD_MIN_LENGTH = 7;
+const PASSWORD_MAX_LENGTH = 24;
 
 export function validateEmail(value) {
     const email = (value || "").trim();
@@ -15,11 +16,12 @@ export function validateEmail(value) {
     return null;
 }
 
-export function validateName(value, label = "Name") {
+export function validateName(value, label = "Username") {
     const name = (value || "").trim();
     if (!name) return `${label} is required.`;
-    if (name.length < 2) return `${label} must be at least 2 characters.`;
-    if (name.length > 120) return `${label} must be under 120 characters.`;
+    if (name.length < 3) return `${label} must be at least 3 characters.`;
+    if (name.length > 30) return `${label} must be under 30 characters.`;
+    if (!USERNAME_RE.test(name)) return `${label} can use letters, numbers, periods, hyphens, and underscores only.`;
     return null;
 }
 
@@ -54,7 +56,7 @@ export function validateLoginForm({ email, password }) {
 
 export function validateRegisterForm({ name, email, password }) {
     const errors = {};
-    const nameError = validateName(name, "Display name");
+    const nameError = validateName(name, "Username");
     if (nameError) errors.name = nameError;
     const emailError = validateEmail(email);
     if (emailError) errors.email = emailError;
