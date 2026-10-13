@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toCreatePayload, useDemo } from "../context/DemoContext.jsx";
@@ -29,6 +30,8 @@ function AddApi() {
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
+        // Direct navigation to an edit URL may happen before the shared list
+        // loads, so fetch the monitor once before populating the form.
         if (!isEditing || hydrated) return;
         if (existing) {
             // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate an edit form after its API request resolves
@@ -48,6 +51,7 @@ function AddApi() {
     }, [existing, fetchApiDetails, hydrated, id, isEditing]);
 
     const update = (field, value) => {
+        // Clear only the field being edited; unrelated validation stays visible.
         setForm((current) => ({ ...current, [field]: value }));
         setErrors((current) => {
             if (!current[field]) return current;
@@ -99,6 +103,8 @@ function AddApi() {
     };
 
     const testConnection = async () => {
+        // Reuse save validation, but run a temporary probe without creating
+        // a monitor or a recorded check.
         const validation = validate();
         if (hasErrors(validation)) return;
         setTesting(true);
@@ -131,6 +137,8 @@ function AddApi() {
     const handleSave = async (event) => {
         event.preventDefault();
         setFormError(null);
+        // Normalize user-entered values once for both create and edit calls;
+        // mapBackendErrors handles any stricter server validation afterward.
         const validation = validate();
         if (hasErrors(validation)) {
             setFormError("Fix the highlighted fields before saving.");
@@ -227,17 +235,17 @@ function AddApi() {
                         <div className="flex items-center justify-between">
                             <span className="text-sm text-on-surface-variant font-medium">Headers</span>
                             <button type="button" onClick={() => setHeaders((current) => [...current, { key: "", value: "" }])} disabled={headers.length >= 20} className="text-primary text-sm flex items-center gap-1 disabled:opacity-40">
-                                <span className="material-symbols-outlined text-base">add</span>Add header
+                                <Icon name="add" className="text-base" />Add header
                             </button>
                         </div>
-                        {errors.headers && <p className="text-error text-xs flex items-center gap-1" role="alert"><span className="material-symbols-outlined text-sm">error</span>{errors.headers}</p>}
+                        {errors.headers && <p className="text-error text-xs flex items-center gap-1" role="alert"><Icon name="error" className="text-sm" />{errors.headers}</p>}
                         {headers.map((header, index) => (
                             <div key={index} className="flex flex-col gap-1">
                                 <div className="flex gap-2">
                                     <input value={header.key} onChange={(e) => updateHeader(index, "key", e.target.value)} placeholder="Key" aria-label={`Header ${index + 1} key`} className={`${inputClassName(errors[`header-${index}`])} font-mono w-1/3`} />
                                     <input value={header.value} onChange={(e) => updateHeader(index, "value", e.target.value)} placeholder="Value" aria-label={`Header ${index + 1} value`} className={`${inputClassName(false)} font-mono`} />
                                     <button type="button" aria-label="Remove header" onClick={() => setHeaders((current) => current.filter((_, i) => i !== index))} className="text-on-surface-variant hover:text-error px-2">
-                                        <span className="material-symbols-outlined">delete</span>
+                                        <Icon name="delete" />
                                     </button>
                                 </div>
                                 {errors[`header-${index}`] && <p className="text-error text-xs" role="alert">{errors[`header-${index}`]}</p>}
@@ -256,7 +264,7 @@ function AddApi() {
                                 <span key={tag} className="bg-surface-raised text-xs px-2 py-1 rounded border border-surface-border flex items-center gap-1">
                                     {tag}
                                     <button type="button" aria-label={`Remove tag ${tag}`} onClick={() => setTags((current) => current.filter((item) => item !== tag))}>
-                                        <span className="material-symbols-outlined text-sm">close</span>
+                                        <Icon name="close" className="text-sm" />
                                     </button>
                                 </span>
                             ))}
@@ -265,8 +273,8 @@ function AddApi() {
                         {(tagError || errors.tags) && <p className="text-error text-xs" role="alert">{tagError || errors.tags}</p>}
                     </div>
 
-                    {testResult && testResult.ok && <div className={`rounded-lg border px-4 py-3 text-sm flex items-center gap-2 ${testResult.status === "Warning" ? "border-warning/30 bg-warning/10 text-warning" : "border-emerald-200 bg-emerald-50 text-success"}`}><span className="material-symbols-outlined">{testResult.status === "Warning" ? "warning" : "check_circle"}</span>Live probe {testResult.status === "Warning" ? "responded slowly" : "succeeded"} · {testResult.code} · {testResult.time}ms</div>}
-                    {testResult && !testResult.ok && <div className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error flex items-center gap-2" role="alert"><span className="material-symbols-outlined">error</span>{testResult.code !== null && testResult.code !== undefined ? `Live probe failed · ${testResult.code} · ` : "Live probe failed · "}{testResult.message}</div>}
+                    {testResult && testResult.ok && <div className={`rounded-lg border px-4 py-3 text-sm flex items-center gap-2 ${testResult.status === "Warning" ? "border-warning/30 bg-warning/10 text-warning" : "border-emerald-200 bg-emerald-50 text-success"}`}><Icon name={testResult.status === "Warning" ? "warning" : "check_circle"} />Live probe {testResult.status === "Warning" ? "responded slowly" : "succeeded"} · {testResult.code} · {testResult.time}ms</div>}
+                    {testResult && !testResult.ok && <div className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error flex items-center gap-2" role="alert"><Icon name="error" />{testResult.code !== null && testResult.code !== undefined ? `Live probe failed · ${testResult.code} · ` : "Live probe failed · "}{testResult.message}</div>}
 
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-5 border-t border-surface-border">
                         <button type="button" onClick={testConnection} disabled={testing} className="border border-primary text-primary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary-soft disabled:opacity-50">
@@ -275,7 +283,7 @@ function AddApi() {
                         <div className="flex gap-3">
                             <button type="button" onClick={() => { notify("Changes discarded", "error"); navigate("/apis"); }} className="border border-surface-border text-on-surface px-5 py-2 rounded-lg text-sm font-semibold hover:bg-surface-raised">Cancel</button>
                             <button type="submit" disabled={saving} className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2">
-                                {saving && <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>}
+                                {saving && <Icon name="progress_activity" className="animate-spin text-base" />}
                                 {saving ? "Saving…" : isEditing ? "Save changes" : "Save API"}
                             </button>
                         </div>

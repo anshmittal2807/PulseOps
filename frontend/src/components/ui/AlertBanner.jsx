@@ -1,3 +1,4 @@
+import Icon from "./Icon.jsx";
 const tones = {
     error: "border-error/30 bg-error/10 text-error",
     success: "border-emerald-200 bg-emerald-50 text-success",
@@ -14,7 +15,7 @@ function AlertBanner({ tone = "error", children }) {
     if (!children) return null;
     return (
         <div className={`rounded-lg border px-4 py-3 text-sm flex items-start gap-2 ${tones[tone] || tones.info}`} role="alert">
-            <span className="material-symbols-outlined text-lg leading-5 shrink-0">{icons[tone] || icons.info}</span>
+            <Icon name={icons[tone] || icons.info} className="text-lg leading-5 shrink-0" />
             <span className="min-w-0">{children}</span>
         </div>
     );

@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiTable from "../components/api/ApiTable.jsx";
@@ -15,6 +16,8 @@ function AllApis() {
     const [method, setMethod] = useState("All Methods");
     const [tag, setTag] = useState("All Tags");
 
+    // Combine the text query with every selected facet. Each "All" option
+    // disables only its own filter, leaving the others active.
     const filteredApis = apis.filter((api) => {
         const matchesSearch =
             api.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -40,14 +43,14 @@ function AllApis() {
             <SyncBanner />
             <div className="flex justify-between items-end mb-6">
                 <div><h1 className="font-headline text-xl md:text-2xl font-semibold tracking-[-0.02em] text-on-surface">API monitors</h1><p className="text-sm text-on-surface-variant mt-1">Manage health checks, thresholds, and endpoint status.</p></div>
-                <button type="button" onClick={() => navigate("/apis/add")} className="sm:hidden bg-primary text-white font-body text-sm font-semibold px-3.5 py-2 rounded-lg flex items-center gap-2"><span className="material-symbols-outlined text-[18px]">add</span>Add monitor</button>
+                <button type="button" onClick={() => navigate("/apis/add")} className="sm:hidden bg-primary text-white font-body text-sm font-semibold px-3.5 py-2 rounded-lg flex items-center gap-2"><Icon name="add" className="text-[18px]" />Add monitor</button>
             </div>
 
             <div className="bg-surface border border-surface-border rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-end">
                 <div className="flex-1 min-w-[200px]">
                     <label htmlFor="api-search" className="block text-xs font-medium text-on-surface-variant mb-2">Search monitors</label>
                     <div className="relative">
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                        <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]" />
                         <input
                             id="api-search"
                             type="text"

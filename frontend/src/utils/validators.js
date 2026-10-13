@@ -4,6 +4,8 @@ const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const ENVIRONMENTS = ["Production", "Staging", "Development"];
 const INTERVALS = [1, 5, 15, 30];
 const AUTH_TYPES = ["None", "Bearer", "API Key", "Basic"];
+const PASSWORD_MIN_LENGTH = 12;
+const PASSWORD_MAX_LENGTH = 100;
 
 export function validateEmail(value) {
     const email = (value || "").trim();
@@ -24,7 +26,7 @@ export function validateName(value, label = "Name") {
 export function passwordChecks(password) {
     const value = password || "";
     return [
-        { label: "At least 8 characters", ok: value.length >= 8 },
+        { label: `At least ${PASSWORD_MIN_LENGTH} characters`, ok: value.length >= PASSWORD_MIN_LENGTH },
         { label: "Contains a letter", ok: /[A-Za-z]/.test(value) },
         { label: "Contains a number", ok: /\d/.test(value) },
     ];
@@ -32,8 +34,8 @@ export function passwordChecks(password) {
 
 export function validatePassword(value) {
     if (!value) return "Password is required.";
-    if (value.length < 8) return "Password must be at least 8 characters.";
-    if (value.length > 100) return "Password must be under 100 characters.";
+    if (value.length < PASSWORD_MIN_LENGTH) return `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`;
+    if (value.length > PASSWORD_MAX_LENGTH) return `Password must be under ${PASSWORD_MAX_LENGTH} characters.`;
     if (!/[A-Za-z]/.test(value) || !/\d/.test(value)) {
         return "Password must contain at least one letter and one number.";
     }
@@ -45,6 +47,8 @@ export function validateLoginForm({ email, password }) {
     const emailError = validateEmail(email);
     if (emailError) errors.email = emailError;
     if (!password) errors.password = "Password is required.";
+    else if (password.length < PASSWORD_MIN_LENGTH) errors.password = `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`;
+    else if (password.length > PASSWORD_MAX_LENGTH) errors.password = `Password must be under ${PASSWORD_MAX_LENGTH} characters.`;
     return errors;
 }
 
@@ -60,6 +64,8 @@ export function validateRegisterForm({ name, email, password }) {
 }
 
 export function validateMonitorForm(form, { headers = [], tags = [] } = {}) {
+    // Mirror the server's monitor rules before submitting, while keeping
+    // per-field messages that the form can render beside each control.
     const errors = {};
     const name = (form.name || "").trim();
     if (!name) errors.name = "Give this monitor a name.";
@@ -112,6 +118,8 @@ export function validateMonitorForm(form, { headers = [], tags = [] } = {}) {
     if (headers.length > 20) {
         errors.headers = "Too many headers (max 20).";
     } else {
+        // HTTP header names are case-insensitive; report the specific row
+        // when a duplicate or malformed key is found.
         const seen = new Set();
         headers.forEach((header, index) => {
             const key = (header.key || "").trim();

@@ -21,6 +21,8 @@ export function AuthProvider({ children }) {
     const [authError, setAuthError] = useState(null);
 
     useEffect(() => {
+        // apiRequest broadcasts a 401 so every protected screen drops its
+        // cached identity and the route guard can send the user to sign in.
         const onUnauthorized = () => {
             setTokenState(null);
             setUser(null);
@@ -33,6 +35,7 @@ export function AuthProvider({ children }) {
     }, []);
 
     const persist = useCallback((nextToken, nextUser) => {
+        // Keep the in-memory session and browser storage aligned across reloads.
         setToken(nextToken);
         setTokenState(nextToken);
         setUser(nextUser);

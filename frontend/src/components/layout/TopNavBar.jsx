@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDemo } from "../../context/DemoContext.jsx";
@@ -26,7 +27,7 @@ function TopNavBar({ title, crumb, onAddApi, onMenu }) {
             <div className="flex items-center justify-between px-4 md:px-8 w-full h-full gap-4">
                 <div className="flex items-center gap-3 min-w-0">
                     <button type="button" onClick={onMenu} aria-label="Open navigation" className="lg:hidden w-9 h-9 rounded-lg border border-surface-border text-on-surface-variant flex items-center justify-center hover:bg-surface-raised hover:text-on-surface">
-                        <span className="material-symbols-outlined text-xl">menu</span>
+                        <Icon name="menu" className="text-xl" />
                     </button>
                     <div className="min-w-0">
                         {crumb && <p className="hidden sm:block text-[11px] leading-4 font-medium tracking-[0.12em] uppercase text-on-surface-variant">{crumb}</p>}
@@ -38,14 +39,14 @@ function TopNavBar({ title, crumb, onAddApi, onMenu }) {
                         <span className={`w-1.5 h-1.5 rounded-full ${systemOk ? "bg-success shadow-[0_0_0_3px_#A7F3D0]" : criticalOpen ? "bg-error shadow-[0_0_0_3px_#FECACA]" : "bg-warning"}`}></span>
                         {statusText}
                     </div>
-                    {onAddApi && <button type="button" onClick={onAddApi} className="hidden sm:flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 text-sm font-semibold text-white hover:bg-blue-700 active:translate-y-px transition-colors"><span className="material-symbols-outlined text-lg">add</span>Add monitor</button>}
+                    {onAddApi && <button type="button" onClick={onAddApi} className="hidden sm:flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 text-sm font-semibold text-white hover:bg-blue-700 active:translate-y-px transition-colors"><Icon name="add" className="text-lg" />Add monitor</button>}
                     <button
                         type="button"
                         aria-label="Notifications"
                         onClick={() => navigate("/alerts")}
                         className="relative w-9 h-9 rounded-lg border border-surface-border bg-background text-on-surface-variant hover:text-primary hover:bg-primary-soft transition-colors flex items-center justify-center"
                     >
-                        <span className="material-symbols-outlined text-xl">notifications</span>
+                        <Icon name="notifications" className="text-xl" />
                         {unread > 0 && <span className="absolute -right-1 -top-1 min-w-4 h-4 px-1 rounded-full bg-error text-surface text-[10px] font-semibold flex items-center justify-center ring-2 ring-background">{unread}</span>}
                     </button>
                     <div className="relative">
@@ -67,13 +68,13 @@ function TopNavBar({ title, crumb, onAddApi, onMenu }) {
                                         <p className="text-xs text-on-surface-variant truncate">{user?.email || ""}</p>
                                     </div>
                                     <button type="button" onClick={() => { setMenuOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-lg text-sm text-on-surface hover:bg-surface-raised flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-lg">account_circle</span>Profile
+                                        <Icon name="account_circle" className="text-lg" />Profile
                                     </button>
                                     <button type="button" onClick={() => { setMenuOpen(false); navigate("/settings"); }} className="w-full text-left px-3 py-2 rounded-lg text-sm text-on-surface hover:bg-surface-raised flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-lg">settings</span>Settings
+                                        <Icon name="settings" className="text-lg" />Settings
                                     </button>
                                     <button type="button" onClick={handleLogout} className="w-full text-left px-3 py-2 rounded-lg text-sm text-error hover:bg-error/10 flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-lg">logout</span>Sign out
+                                        <Icon name="logout" className="text-lg" />Sign out
                                     </button>
                                 </div>
                             </>

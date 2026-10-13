@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useDemo } from "../context/DemoContext.jsx";
 import EmptyState from "../components/ui/EmptyState.jsx";
 import SyncBanner from "../components/ui/SyncBanner.jsx";
@@ -31,7 +32,7 @@ function ActivityLog() {
                         className="flex items-start gap-4 p-5 border-b border-surface-border hover:bg-surface-raised transition-colors duration-150"
                     >
                         <div className="w-8 h-8 rounded-full bg-surface-raised flex items-center justify-center border border-surface-border shrink-0 mt-1">
-                            <span className={`material-symbols-outlined ${entry.tone} text-sm`}>{entry.icon}</span>
+                            <Icon name={entry.icon} className={`${entry.tone} text-sm`} />
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-start gap-2 mb-1">

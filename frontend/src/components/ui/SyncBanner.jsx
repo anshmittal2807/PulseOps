@@ -1,3 +1,4 @@
+import Icon from "./Icon.jsx";
 import { useDemo } from "../../context/DemoContext.jsx";
 
 function SyncBanner() {
@@ -6,14 +7,14 @@ function SyncBanner() {
     if (syncing && !syncError) {
         return (
             <div className="mb-4 rounded-lg border border-surface-border bg-surface px-4 py-2.5 text-sm text-on-surface-variant flex items-center gap-2">
-                <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
+                <Icon name="progress_activity" className="animate-spin text-base" />
                 Syncing with backend…
             </div>
         );
     }
     return (
         <div className="mb-4 rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error flex items-center gap-3" role="alert">
-            <span className="material-symbols-outlined">cloud_off</span>
+            <Icon name="cloud_off" />
             <span className="flex-1">Could not reach the backend ({syncError}). Showing last known data.</span>
             <button
                 type="button"

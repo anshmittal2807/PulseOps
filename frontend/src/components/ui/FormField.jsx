@@ -1,3 +1,4 @@
+import Icon from "./Icon.jsx";
 function FormField({ label, error, hint, htmlFor, children }) {
     return (
         <div className="flex flex-col gap-1.5 text-sm">
@@ -9,7 +10,7 @@ function FormField({ label, error, hint, htmlFor, children }) {
             {children}
             {error ? (
                 <p className="text-error text-xs flex items-center gap-1" role="alert">
-                    <span className="material-symbols-outlined text-sm">error</span>
+                    <Icon name="error" className="text-sm" />
                     {error}
                 </p>
             ) : hint ? (

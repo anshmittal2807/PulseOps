@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useEffect, useState } from "react";
 import { api } from "../service/apiClient.js";
 import { useDemo } from "../context/DemoContext.jsx";
@@ -14,6 +15,8 @@ function Reports() {
     const { notify } = useDemo();
 
     useEffect(() => {
+        // Ignore a slower response from a previous period after the user
+        // switches tabs; only the newest request may update this page.
         let active = true;
         api.report(period.toLowerCase())
             .then((result) => {
@@ -47,6 +50,8 @@ function Reports() {
 
     const exportReport = () => {
         if (!report) return;
+        // Quote every CSV cell and escape inner quotes so names and URLs with
+        // commas or quotes remain valid spreadsheet columns.
         const rows = [
             ["Monitor", "URL", "Current status", "Checks", "Failed checks", "Uptime", "Average response (ms)", "Estimated downtime (min)"],
             ...summaries.map((item) => [item.name, item.url, item.currentStatus, item.totalChecks, item.failedChecks, item.uptime, item.averageResponseTimeMs, item.estimatedDowntimeMinutes]),
@@ -74,7 +79,7 @@ function Reports() {
                             <button key={option} type="button" onClick={() => choosePeriod(option)} className={`px-3 md:px-4 py-1.5 rounded text-sm ${option === period ? "bg-primary text-white font-medium" : "text-on-surface-variant hover:bg-surface-raised"}`}>{option}</button>
                         ))}
                     </div>
-                    <button type="button" onClick={exportReport} disabled={!report || loading} className="bg-primary text-white rounded px-4 py-2 text-sm font-semibold flex items-center gap-2 hover:bg-blue-700 disabled:opacity-40"><span className="material-symbols-outlined text-lg">download</span>Export CSV</button>
+                    <button type="button" onClick={exportReport} disabled={!report || loading} className="bg-primary text-white rounded px-4 py-2 text-sm font-semibold flex items-center gap-2 hover:bg-blue-700 disabled:opacity-40"><Icon name="download" className="text-lg" />Export CSV</button>
                 </div>
             </div>
 

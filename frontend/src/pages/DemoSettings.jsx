@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDemo } from "../context/DemoContext.jsx";
@@ -33,6 +34,8 @@ function DemoSettings() {
         event.preventDefault();
         setFormError(null);
         if (isProfile) {
+            // Profile changes go to the account API; display preferences below
+            // are browser-local and do not change the monitoring scheduler.
             const nameError = validateName(profile.name, "Display name");
             if (nameError) {
                 setProfileError(nameError);
@@ -74,7 +77,7 @@ function DemoSettings() {
                 </p>
                 {!isProfile && (
                     <div className="mb-4 rounded-lg border border-primary/30 bg-primary-soft px-4 py-3 text-sm text-on-surface flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">cloud_done</span>
+                        <Icon name="cloud_done" className="text-primary" />
                         Monitors, checks, alerts and activity are recorded automatically per account.
                     </div>
                 )}
@@ -101,7 +104,7 @@ function DemoSettings() {
                     </>}
                     <div className="flex justify-end items-center pt-5 border-t border-surface-border">
                         <button type="submit" disabled={saving} className="bg-primary text-white rounded px-5 py-2 text-sm font-semibold ml-auto hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2">
-                            {saving && <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>}
+                            {saving && <Icon name="progress_activity" className="animate-spin text-base" />}
                             {saving ? "Saving…" : "Save changes"}
                         </button>
                     </div>
@@ -127,6 +130,8 @@ function browserTimezone() {
 }
 
 function loadPreferences() {
+    // Merge saved values with defaults so older browser settings still work
+    // when a new preference is added later.
     const defaults = { emailAlerts: true, desktopAlerts: false, timezone: browserTimezone(), retention: "30 days" };
     try {
         const stored = JSON.parse(localStorage.getItem(SETTINGS_KEY));

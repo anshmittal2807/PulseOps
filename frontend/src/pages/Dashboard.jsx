@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import StatCard from "../components/dashboard/StatCard.jsx";
 import { LineChart, DoughnutChart, BarChart } from "../components/dashboard/Charts.jsx";
 import RecentChecksTable from "../components/dashboard/RecentChecksTable.jsx";
@@ -18,6 +19,8 @@ function formatTick(iso) {
 function Dashboard() {
     const navigate = useNavigate();
     const { apis, alerts, recentChecks, syncing } = useDemo();
+    // Derive overview cards from the shared monitor snapshot also used by
+    // the table, keeping every status count tied to the visible API data.
     const healthy = apis.filter((api) => api.status === "Healthy").length;
     const offline = apis.filter((api) => api.status === "Offline" || api.status === "Critical").length;
     const measured = apis.filter((api) => api.averageResponseTime > 0);
@@ -74,7 +77,7 @@ function Dashboard() {
                     <StatCard title="Average latency" value={average} suffix="ms" icon="speed" detail="Across responding APIs" />
                 </div>
 
-                {unreadAlerts.length > 0 && <button type="button" onClick={() => navigate('/alerts')} className="w-full mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 flex items-center gap-3 text-left hover:bg-red-100 transition-colors"><span className="w-8 h-8 shrink-0 rounded-lg bg-error text-white flex items-center justify-center"><span className="material-symbols-outlined text-lg">warning</span></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-on-surface">{unreadAlerts.length} incident{unreadAlerts.length === 1 ? "" : "s"} require{unreadAlerts.length === 1 ? "s" : ""} review</span><span className="block text-xs text-on-surface-variant truncate">{bannerDetail}</span></span><span className="material-symbols-outlined text-on-surface-variant text-lg">arrow_forward</span></button>}
+                {unreadAlerts.length > 0 && <button type="button" onClick={() => navigate('/alerts')} className="w-full mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 flex items-center gap-3 text-left hover:bg-red-100 transition-colors"><span className="w-8 h-8 shrink-0 rounded-lg bg-error text-white flex items-center justify-center"><Icon name="warning" className="text-lg" /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-on-surface">{unreadAlerts.length} incident{unreadAlerts.length === 1 ? "" : "s"} require{unreadAlerts.length === 1 ? "s" : ""} review</span><span className="block text-xs text-on-surface-variant truncate">{bannerDetail}</span></span><Icon name="arrow_forward" className="text-on-surface-variant text-lg" /></button>}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
                     <section className="lg:col-span-2 bg-surface border border-surface-border rounded-xl p-5 md:p-6">

@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -53,7 +54,7 @@ function Login() {
             <div className="w-full max-w-md">
                 <div className="flex items-center gap-3 mb-8 justify-center">
                     <span className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-white">
-                        <span className="material-symbols-outlined text-2xl">monitor_heart</span>
+                        <Icon name="monitor_heart" className="text-2xl" />
                     </span>
                     <div>
                         <h1 className="font-headline text-xl font-semibold text-on-surface leading-6">PulseOps</h1>
@@ -71,6 +72,8 @@ function Login() {
                             id="login-email"
                             type="email"
                             autoComplete="email"
+                            maxLength={190}
+                            required
                             value={form.email}
                             onChange={(e) => update("email", e.target.value)}
                             placeholder="you@company.com"
@@ -83,6 +86,7 @@ function Login() {
                             id="login-password"
                             value={form.password}
                             onChange={(e) => update("password", e.target.value)}
+                            placeholder="At least 12 characters"
                             className={AuthInputClassName(errors.password)}
                         />
                     </FormField>
@@ -91,7 +95,7 @@ function Login() {
                         disabled={authLoading}
                         className="w-full h-11 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                     >
-                        {authLoading && <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>}
+                        {authLoading && <Icon name="progress_activity" className="animate-spin text-lg" />}
                         {authLoading ? "Signing in…" : "Sign in"}
                     </button>
                     <p className="text-sm text-on-surface-variant text-center">

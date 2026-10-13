@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import StatusBadge from "../components/api/StatusBadge.jsx";
@@ -14,7 +15,8 @@ function ApiDetails() {
     const api = apis.find((item) => String(item.id) === id);
 
     useEffect(() => {
-        // Pull the last 50 recorded checks for this monitor.
+        // The shared list has summary data only. Load the last 50 checks for
+        // this page, and reuse already loaded logs when revisiting it.
         const cached = apis.find((item) => String(item.id) === id);
         if (cached && cached.logs && cached.logs.length > 0) return;
         // eslint-disable-next-line react-hooks/set-state-in-effect -- async detail fetch on mount
@@ -52,16 +54,16 @@ function ApiDetails() {
             <div className="w-full max-w-[1200px] mx-auto flex flex-col gap-6">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-2">
                     <div className="flex flex-col gap-2">
-                        <button type="button" onClick={() => navigate("/apis")} className="text-on-surface-variant hover:text-primary text-sm flex items-center gap-1 self-start"><span className="material-symbols-outlined text-base">arrow_back</span>All APIs</button>
+                        <button type="button" onClick={() => navigate("/apis")} className="text-on-surface-variant hover:text-primary text-sm flex items-center gap-1 self-start"><Icon name="arrow_back" className="text-base" />All APIs</button>
                         <div className="flex items-center gap-3"><h1 className="font-headline text-2xl font-semibold text-on-surface">{api.name}</h1><StatusBadge status={api.status} />{api.paused && <span className="text-warning text-xs uppercase tracking-wider border border-warning/30 rounded px-2 py-1">Paused</span>}</div>
-                        <div className="flex items-center gap-2 text-on-surface-variant font-mono text-sm"><span className="material-symbols-outlined text-base">link</span><span>{api.url}</span></div>
+                        <div className="flex items-center gap-2 text-on-surface-variant font-mono text-sm"><Icon name="link" className="text-base" /><span>{api.url}</span></div>
                         {api.description && <p className="text-sm text-on-surface-variant max-w-2xl">{api.description}</p>}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        <button type="button" onClick={() => navigate(`/apis/${api.id}/edit`)} className="border border-surface-border rounded px-4 py-2 text-sm hover:bg-surface-raised flex items-center gap-2"><span className="material-symbols-outlined text-lg">edit</span>Edit</button>
-                        <button type="button" onClick={handleToggle} className="border border-surface-border rounded px-4 py-2 text-sm hover:bg-surface-raised flex items-center gap-2"><span className="material-symbols-outlined text-lg">{api.paused ? "play_arrow" : "pause"}</span>{api.paused ? "Resume" : "Pause"}</button>
-                        <button type="button" onClick={handleCheck} disabled={checking || api.paused} className="bg-primary text-white rounded px-4 py-2 text-sm font-semibold disabled:opacity-40 flex items-center gap-2 hover:bg-blue-700"><span className={`material-symbols-outlined text-lg ${checking ? "animate-spin" : ""}`}>{checking ? "progress_activity" : "play_circle"}</span>{checking ? "Running…" : "Run live check"}</button>
-                        <button type="button" onClick={() => setConfirmingDelete(true)} className="border border-error/40 text-error rounded px-3 py-2 hover:bg-error/10" aria-label="Delete API"><span className="material-symbols-outlined text-lg">delete</span></button>
+                        <button type="button" onClick={() => navigate(`/apis/${api.id}/edit`)} className="border border-surface-border rounded px-4 py-2 text-sm hover:bg-surface-raised flex items-center gap-2"><Icon name="edit" className="text-lg" />Edit</button>
+                        <button type="button" onClick={handleToggle} className="border border-surface-border rounded px-4 py-2 text-sm hover:bg-surface-raised flex items-center gap-2"><Icon name={api.paused ? "play_arrow" : "pause"} className="text-lg" />{api.paused ? "Resume" : "Pause"}</button>
+                        <button type="button" onClick={handleCheck} disabled={checking || api.paused} className="bg-primary text-white rounded px-4 py-2 text-sm font-semibold disabled:opacity-40 flex items-center gap-2 hover:bg-blue-700"><Icon name={checking ? "progress_activity" : "play_circle"} className={`text-lg ${checking ? "animate-spin" : ""}`} />{checking ? "Running…" : "Run live check"}</button>
+                        <button type="button" onClick={() => setConfirmingDelete(true)} className="border border-error/40 text-error rounded px-3 py-2 hover:bg-error/10" aria-label="Delete API"><Icon name="delete" className="text-lg" /></button>
                     </div>
                 </div>
 

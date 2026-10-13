@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -58,7 +59,7 @@ function Register() {
             <div className="w-full max-w-md">
                 <div className="flex items-center gap-3 mb-8 justify-center">
                     <span className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-white">
-                        <span className="material-symbols-outlined text-2xl">monitor_heart</span>
+                        <Icon name="monitor_heart" className="text-2xl" />
                     </span>
                     <div>
                         <h1 className="font-headline text-xl font-semibold text-on-surface leading-6">PulseOps</h1>
@@ -75,6 +76,9 @@ function Register() {
                         <input
                             id="register-name"
                             autoComplete="name"
+                            minLength={2}
+                            maxLength={120}
+                            required
                             value={form.name}
                             onChange={(e) => update("name", e.target.value)}
                             placeholder="Ada Lovelace"
@@ -87,6 +91,8 @@ function Register() {
                             id="register-email"
                             type="email"
                             autoComplete="email"
+                            maxLength={190}
+                            required
                             value={form.email}
                             onChange={(e) => update("email", e.target.value)}
                             placeholder="you@company.com"
@@ -102,6 +108,7 @@ function Register() {
                                 onChange={(e) => update("password", e.target.value)}
                                 onBlur={() => setTouchedPassword(true)}
                                 autoComplete="new-password"
+                                placeholder="At least 12 characters"
                                 className={AuthInputClassName(errors.password)}
                             />
                         </FormField>
@@ -109,7 +116,7 @@ function Register() {
                             <ul className="mt-2 flex flex-col gap-1">
                                 {checks.map((check) => (
                                     <li key={check.label} className={`text-xs flex items-center gap-1.5 ${check.ok ? "text-success" : "text-on-surface-variant"}`}>
-                                        <span className="material-symbols-outlined text-sm">{check.ok ? "check_circle" : "radio_button_unchecked"}</span>
+                                        <Icon name={check.ok ? "check_circle" : "radio_button_unchecked"} className="text-sm" />
                                         {check.label}
                                     </li>
                                 ))}
@@ -121,7 +128,7 @@ function Register() {
                         disabled={authLoading}
                         className="w-full h-11 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                     >
-                        {authLoading && <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>}
+                        {authLoading && <Icon name="progress_activity" className="animate-spin text-lg" />}
                         {authLoading ? "Creating account…" : "Create account"}
                     </button>
                     <p className="text-sm text-on-surface-variant text-center">

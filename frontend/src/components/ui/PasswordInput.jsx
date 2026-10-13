@@ -1,3 +1,4 @@
+import Icon from "./Icon.jsx";
 import { useState } from "react";
 
 function PasswordInput({ id, value, onChange, placeholder = "••••••••", autoComplete = "current-password", className = "", onBlur }) {
@@ -12,6 +13,9 @@ function PasswordInput({ id, value, onChange, placeholder = "••••••�
                 onBlur={onBlur}
                 placeholder={placeholder}
                 autoComplete={autoComplete}
+                minLength={12}
+                maxLength={100}
+                required
                 className={`${className} pr-11`}
             />
             <button
@@ -21,7 +25,7 @@ function PasswordInput({ id, value, onChange, placeholder = "••••••�
                 title={visible ? "Hide password" : "Show password"}
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-md text-on-surface-variant hover:text-primary hover:bg-primary-soft flex items-center justify-center transition-colors"
             >
-                <span className="material-symbols-outlined text-xl">{visible ? "visibility_off" : "visibility"}</span>
+                <Icon name={visible ? "visibility_off" : "visibility"} className="text-xl" />
             </button>
         </span>
     );

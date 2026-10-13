@@ -25,6 +25,8 @@ const pageHeaders = {
 }
 
 function RequireAuth() {
+    // Protected pages all pass through this guard; a missing token redirects
+    // before their layouts or data requests are shown.
     const { isLoggedIn } = useAuth();
     if (!isLoggedIn) return <Navigate to="/login" replace />;
     return <Outlet />;
@@ -40,6 +42,8 @@ function AppLayout() {
     const location = useLocation()
     const navigate = useNavigate()
     const [navOpen, setNavOpen] = useState(false)
+    // Exact routes use pageHeaders; monitor detail and edit URLs need pattern
+    // fallbacks because their IDs vary per page.
     const header = pageHeaders[location.pathname]
         || (location.pathname === '/apis/add' ? { title: 'Add API' } : null)
         || (location.pathname.endsWith('/edit') ? { title: 'Edit API' } : null)

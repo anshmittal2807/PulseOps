@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon.jsx";
 function StatCard({ title, value, suffix, variant, icon, detail }) {
     const variantClasses = {
         healthy: "pulse-pip healthy",
@@ -14,7 +15,7 @@ function StatCard({ title, value, suffix, variant, icon, detail }) {
         <div className="bg-surface border border-surface-border rounded-xl p-4 md:p-5 flex flex-col min-h-[132px] relative shadow-sm">
             <div className="flex items-center justify-between mb-5">
                 <span className="text-sm font-medium text-on-surface-variant">{title}</span>
-                {icon && <span className="material-symbols-outlined text-[18px] text-on-surface-variant">{icon}</span>}
+                {icon && <Icon name={icon} className="text-[18px] text-on-surface-variant" />}
                 {!icon && pipClass && <span className={`${pipClass} w-2 h-2 rounded-full`}></span>}
             </div>
             <div className="mt-auto flex items-end justify-between gap-3">

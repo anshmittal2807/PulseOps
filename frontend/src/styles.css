@@ -73,10 +73,6 @@ select:not(:disabled) {
     background: transparent;
 }
 
-.material-symbols-outlined {
-    font-variation-settings: "FILL" 0, "wght" 450, "GRAD" 0, "opsz" 24;
-}
-
 /* Pulsing glow for healthy status dots */
 @keyframes status-pulse {
     0% { transform: scale(1); opacity: 1; }
@@ -87,5 +83,4 @@ select:not(:disabled) {
 .status-pulse {
     box-shadow: 0 0 0 3px #A7F3D0;
 }
-
 

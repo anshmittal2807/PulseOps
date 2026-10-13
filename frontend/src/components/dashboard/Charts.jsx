@@ -23,6 +23,8 @@ function LineChart({ data, labels }) {
 
     const maxValue = Math.max(...values, 1);
 
+    // Scale samples into the SVG drawing area while reserving the bottom
+    // strip for time labels; a single sample sits at the left padding.
     const stepX = values.length > 1 ? (width - padding * 2) / (values.length - 1) : 0;
     const stepY = (height - padding * 2 - 16) / maxValue;
 
@@ -80,6 +82,8 @@ function DoughnutChart({ data, colors, labels }) {
     const circumference = 2 * Math.PI * radius;
     const thickness = 14;
 
+    // Each SVG circle draws only its share of the circumference. Its offset
+    // starts where all earlier segments ended, forming one continuous ring.
     const segments = values.map((value, index) => {
         const dash = (value / total) * circumference;
         const priorDash = values
@@ -144,6 +148,7 @@ function BarChart({ data, labels }) {
 
     const maxValue = Math.max(...values, 1);
     const barGap = 24;
+    // Divide the available plot width evenly after accounting for gaps.
     const barWidth = (width - padding * 2 - barGap * (values.length - 1)) / values.length;
 
     return (

@@ -24,6 +24,7 @@ export function isAuthenticated() {
 }
 
 async function parseBody(response) {
+    // Successful deletes may have no body; error responses may be plain text.
     const text = await response.text();
     if (!text) return null;
     try {
@@ -55,6 +56,8 @@ export async function apiRequest(path, { method = "GET", body, auth = true } = {
     }
     const payload = await parseBody(response);
     if (!response.ok) {
+        // Preserve both a readable message and field-level validation details
+        // so forms can show server errors beside the correct inputs.
         const message =
             (payload && typeof payload === "object" && (payload.message || payload.error)) ||
             `Request failed (${response.status})`;

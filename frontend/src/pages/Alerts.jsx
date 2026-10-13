@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon.jsx";
 import { useNavigate } from "react-router-dom";
 import { useDemo } from "../context/DemoContext.jsx";
 import EmptyState from "../components/ui/EmptyState.jsx";
@@ -17,7 +18,7 @@ function AlertRow({ alert, onMarkRead, onOpen }) {
         <div className={`grid grid-cols-12 gap-4 px-5 py-4 border-b border-surface-border hover:bg-surface-raised transition-colors items-start relative group ${alert.unread ? "" : "opacity-60"}`}>
             {alert.unread && <div className={`absolute left-0 top-0 bottom-0 w-1 ${styles.bar}`}></div>}
             <div className="col-span-3 flex items-center gap-2 pl-2">
-                <span className="material-symbols-outlined text-on-surface-variant text-sm">{alert.icon}</span>
+                <Icon name={alert.icon} className="text-on-surface-variant text-sm" />
                 <button type="button" onClick={() => onOpen(alert.apiId)} className="font-body text-on-surface font-medium truncate hover:text-primary text-left">{alert.service}</button>
             </div>
             <div className="col-span-2 flex items-center">
@@ -42,10 +43,10 @@ function AlertRow({ alert, onMarkRead, onOpen }) {
                         title="Mark as read"
                         className="text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
                     >
-                        <span className="material-symbols-outlined text-lg">check_circle</span>
+                        <Icon name="check_circle" className="text-lg" />
                     </button>
                 ) : (
-                    <span className="material-symbols-outlined text-slate-400 text-lg">done_all</span>
+                    <Icon name="done_all" className="text-slate-400 text-lg" />
                 )}
             </div>
         </div>

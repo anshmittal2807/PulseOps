@@ -66,6 +66,8 @@ function requireToken() {
 }
 
 function deriveDowntimeHistory(logs) {
+    // Logs arrive newest first. Walk forward in time so each failed stretch
+    // ends at its first successful check; an unfinished stretch stays ongoing.
     const chronological = [...(logs || [])]
         .filter((log) => log.checkedAt)
         .sort((a, b) => new Date(a.checkedAt) - new Date(b.checkedAt));
@@ -113,6 +115,8 @@ export function DemoProvider({ children }) {
         setSyncing(true);
         setSyncError(null);
         try {
+            // Fetch the shared page data together, then replace one consistent
+            // snapshot so dashboard, alerts, and activity stay in sync.
             const [apis, alerts, activity, recentChecks] = await Promise.all([
                 api.listApis(),
                 api.listAlerts(),
@@ -233,12 +237,14 @@ export function DemoProvider({ children }) {
 
     const markAlertRead = (id) => {
         requireToken();
+        // Update immediately for a responsive UI; refresh reconciles with the server.
         api.markAlertRead(id).then(refresh).catch(() => {});
         setState((current) => ({ ...current, alerts: current.alerts.map((alert) => alert.id === id ? { ...alert, unread: false } : alert) }));
     };
 
     const markAllAlertsRead = () => {
         requireToken();
+        // Use the same optimistic flow for the bulk action.
         api.markAllAlertsRead().then(refresh).catch(() => {});
         setState((current) => ({ ...current, alerts: current.alerts.map((alert) => ({ ...alert, unread: false })) }));
         notify("All alerts marked as read");

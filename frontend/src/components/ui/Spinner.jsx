@@ -1,7 +1,8 @@
+import Icon from "./Icon.jsx";
 function Spinner({ label = "Loading…" }) {
     return (
         <span className="inline-flex items-center gap-2" role="status" aria-label={label}>
-            <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
+            <Icon name="progress_activity" className="animate-spin text-lg" />
             <span className="text-sm">{label}</span>
         </span>
     );
