@@ -1,3 +1,37 @@
+## 2026-10-13 - Fix backend startup failure with H2 AUTO_SERVER option
+
+### Type
+Fix
+
+### Summary
+Backend failed to start ("Unable to start embedded Tomcat" caused by
+`Feature not supported: "AUTO_SERVER=TRUE && DB_CLOSE_ON_EXIT=FALSE"`).
+Removed the unsupported option combination from the default H2 datasource URL.
+
+### Files Created
+- None
+
+### Files Modified
+- ../backend/src/main/resources/application.properties
+- CHANGELOG.md
+
+### Files Deleted
+- None
+
+### Details
+- Default `spring.datasource.url` changed from
+  `jdbc:h2:file:./data/pulseops;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE`
+  to `jdbc:h2:file:./data/pulseops;AUTO_SERVER=TRUE`.
+- H2 2.4.x does not allow `AUTO_SERVER=TRUE` together with `DB_CLOSE_ON_EXIT=FALSE`.
+- No API, database schema, UI or dependency changes. The test config (in-memory H2) and the MySQL profile are unchanged.
+- If `DATASOURCE_URL` is set in the environment, it overrides this default and must not contain both options.
+
+### Testing
+- Ran `mvnw spring-boot:run` in the backend with the new default URL.
+- Result: Hibernate connected to H2 (`jdbc:h2:file:./data/pulseops`), the JPA EntityManagerFactory initialized, Tomcat started on port 8080 and the admin seeder ran. No startup errors.
+- Backend unit tests were not run.
+
+
 ## 2026-09-13 - Convert Activity Log and Reports HTML mockups to React
 
 ### Type
